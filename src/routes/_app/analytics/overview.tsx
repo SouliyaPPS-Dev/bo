@@ -29,10 +29,9 @@ function AnalyticsOverviewPage() {
           </Stack>
         }
       />
-
       <Grid container spacing={3}>
         {/* Key Metrics */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="h6" gutterBottom>
             Key Performance Indicators
           </Typography>
@@ -44,7 +43,13 @@ function AnalyticsOverviewPage() {
           { label: 'Bounce Rate', value: '32.5%', growth: '-5%', period: 'This Month' },
           { label: 'Session Duration', value: '4m 32s', growth: '+12%', period: 'This Month' },
         ].map((metric, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid
+            key={index}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3
+            }}>
             <Card>
               <CardContent>
                 <Stack spacing={1}>
@@ -80,7 +85,11 @@ function AnalyticsOverviewPage() {
         ))}
 
         {/* Charts Section */}
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Paper sx={{ p: 3, height: 350 }}>
             <Typography variant="h6" gutterBottom>
               Traffic Sources
@@ -101,7 +110,11 @@ function AnalyticsOverviewPage() {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Paper sx={{ p: 3, height: 350 }}>
             <Typography variant="h6" gutterBottom>
               User Activity Heatmap
@@ -123,7 +136,7 @@ function AnalyticsOverviewPage() {
         </Grid>
 
         {/* Device Breakdown */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               Device Breakdown
@@ -134,7 +147,12 @@ function AnalyticsOverviewPage() {
                 { device: 'Mobile', percentage: 28, color: 'success.main' },
                 { device: 'Tablet', percentage: 7, color: 'warning.main' },
               ].map((item, index) => (
-                <Grid item xs={12} sm={4} key={index}>
+                <Grid
+                  key={index}
+                  size={{
+                    xs: 12,
+                    sm: 4
+                  }}>
                   <Stack spacing={1}>
                     <Stack direction="row" justifyContent="space-between">
                       <Typography variant="body2">{item.device}</Typography>

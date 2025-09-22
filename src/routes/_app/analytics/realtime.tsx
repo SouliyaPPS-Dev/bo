@@ -49,10 +49,13 @@ function RealtimeAnalyticsPage() {
           </Stack>
         }
       />
-
       <Grid container spacing={3}>
         {/* Active Users Card */}
-        <Grid item xs={12} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 3
+          }}>
           <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
             <CardContent>
               <Stack spacing={2}>
@@ -88,7 +91,11 @@ function RealtimeAnalyticsPage() {
         </Grid>
 
         {/* Real-time Stats */}
-        <Grid item xs={12} md={9}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 9
+          }}>
           <Grid container spacing={2}>
             {[
               { label: 'Page Views/Min', value: '1,234', change: '+5.2%' },
@@ -96,7 +103,12 @@ function RealtimeAnalyticsPage() {
               { label: 'Bounce Rate', value: '24.5%', change: '-2.3%' },
               { label: 'New Users', value: '89', change: '+15.7%' },
             ].map((stat, index) => (
-              <Grid item xs={6} md={3} key={index}>
+              <Grid
+                key={index}
+                size={{
+                  xs: 6,
+                  md: 3
+                }}>
                 <Paper sx={{ p: 2 }}>
                   <Stack spacing={1}>
                     <Typography variant="body2" color="text.secondary">
@@ -120,7 +132,11 @@ function RealtimeAnalyticsPage() {
         </Grid>
 
         {/* Recent Activity */}
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" gutterBottom>
               Recent Activity
@@ -149,7 +165,11 @@ function RealtimeAnalyticsPage() {
         </Grid>
 
         {/* Top Pages */}
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" gutterBottom>
               Top Pages (Live)
@@ -178,7 +198,7 @@ function RealtimeAnalyticsPage() {
         </Grid>
 
         {/* Geographic Distribution */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
               <Typography variant="h6">Geographic Distribution</Typography>
@@ -186,7 +206,13 @@ function RealtimeAnalyticsPage() {
             </Stack>
             <Grid container spacing={2}>
               {locations.map((location, index) => (
-                <Grid item xs={12} sm={6} md={2.4} key={index}>
+                <Grid
+                  key={index}
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    md: 2.4
+                  }}>
                   <Card variant="outlined">
                     <CardContent>
                       <Stack spacing={1} alignItems="center">
@@ -210,7 +236,7 @@ function RealtimeAnalyticsPage() {
         </Grid>
 
         {/* Device Types */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
               <Typography variant="h6">Device Types (Live)</Typography>
@@ -222,7 +248,12 @@ function RealtimeAnalyticsPage() {
                 { device: 'Mobile', users: 123, percentage: 36, icon: '📱' },
                 { device: 'Tablet', users: 30, percentage: 9, icon: '📱' },
               ].map((item, index) => (
-                <Grid item xs={12} md={4} key={index}>
+                <Grid
+                  key={index}
+                  size={{
+                    xs: 12,
+                    md: 4
+                  }}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Typography variant="h4">{item.icon}</Typography>
                     <Box sx={{ flexGrow: 1 }}>

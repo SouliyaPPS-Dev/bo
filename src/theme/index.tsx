@@ -1,7 +1,8 @@
-import { extendTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
-// MUI v6: Enable CSS variables + colorSchemes for modern dark/light theming
-export const theme = extendTheme({
+// MUI v7: Enable CSS variables + colorSchemes for modern dark/light theming
+export const theme = createTheme({
+  cssVariables: true,
   colorSchemes: {
     light: {
       palette: {

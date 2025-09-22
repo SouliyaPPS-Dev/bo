@@ -158,7 +158,6 @@ function OrdersPage() {
           </Button>
         }
       />
-
       <Paper sx={{ p: 3 }}>
         {/* Tabs */}
         <Tabs
@@ -265,7 +264,11 @@ function OrdersPage() {
         {/* Summary Stats */}
         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
           <Grid container spacing={3}>
-            <Grid item xs={6} sm={3}>
+            <Grid
+              size={{
+                xs: 6,
+                sm: 3
+              }}>
               <Stack spacing={0.5}>
                 <Typography variant='caption' color='text.secondary'>
                   Total Orders
@@ -275,7 +278,11 @@ function OrdersPage() {
                 </Typography>
               </Stack>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid
+              size={{
+                xs: 6,
+                sm: 3
+              }}>
               <Stack spacing={0.5}>
                 <Typography variant='caption' color='text.secondary'>
                   Total Revenue
@@ -288,7 +295,11 @@ function OrdersPage() {
                 </Typography>
               </Stack>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid
+              size={{
+                xs: 6,
+                sm: 3
+              }}>
               <Stack spacing={0.5}>
                 <Typography variant='caption' color='text.secondary'>
                   Average Order Value
@@ -304,7 +315,11 @@ function OrdersPage() {
                 </Typography>
               </Stack>
             </Grid>
-            <Grid item xs={6} sm={3}>
+            <Grid
+              size={{
+                xs: 6,
+                sm: 3
+              }}>
               <Stack spacing={0.5}>
                 <Typography variant='caption' color='text.secondary'>
                   Pending Orders

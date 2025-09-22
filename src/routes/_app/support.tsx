@@ -126,16 +126,20 @@ function SupportPage() {
         title='Support'
         subtitle='Get help and find answers to your questions'
       />
-
       <Grid container spacing={3}>
         {/* Contact Methods */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant='h6' gutterBottom>
             Contact Support
           </Typography>
         </Grid>
         {contactMethods.map((method, index) => (
-          <Grid item xs={12} md={4} key={index}>
+          <Grid
+            key={index}
+            size={{
+              xs: 12,
+              md: 4
+            }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Stack spacing={2}>
@@ -178,7 +182,11 @@ function SupportPage() {
         ))}
 
         {/* FAQ Section */}
-        <Grid item xs={12} md={8}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 8
+          }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant='h6' gutterBottom>
               Frequently Asked Questions
@@ -216,7 +224,11 @@ function SupportPage() {
         </Grid>
 
         {/* Resources */}
-        <Grid item xs={12} md={4}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 4
+          }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant='h6' gutterBottom>
               Resources
@@ -262,13 +274,17 @@ function SupportPage() {
         </Grid>
 
         {/* Contact Form */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Paper sx={{ p: 3 }}>
             <Typography variant='h6' gutterBottom>
               Send us a Message
             </Typography>
             <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   fullWidth
                   label='Name'
@@ -276,7 +292,11 @@ function SupportPage() {
                   size='small'
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   fullWidth
                   label='Email'
@@ -285,7 +305,7 @@ function SupportPage() {
                   type='email'
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField
                   fullWidth
                   label='Subject'
@@ -293,7 +313,7 @@ function SupportPage() {
                   size='small'
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField
                   fullWidth
                   label='Message'
@@ -302,7 +322,7 @@ function SupportPage() {
                   rows={4}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Button variant='contained' startIcon={<Send />}>
                   Send Message
                 </Button>

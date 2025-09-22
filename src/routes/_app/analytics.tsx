@@ -64,11 +64,16 @@ function AnalyticsPage() {
         title='Analytics Overview'
         subtitle='Monitor your application performance and user engagement'
       />
-
       <Grid container spacing={3}>
         {/* Stats Cards */}
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid
+            key={index}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3
+            }}>
             <Card
               elevation={0}
               sx={{ border: '1px solid', borderColor: 'divider' }}
@@ -113,7 +118,11 @@ function AnalyticsPage() {
         ))}
 
         {/* Main Chart Area */}
-        <Grid item xs={12} md={8}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 8
+          }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant='h6' gutterBottom>
               Traffic Overview
@@ -136,7 +145,11 @@ function AnalyticsPage() {
         </Grid>
 
         {/* Side Stats */}
-        <Grid item xs={12} md={4}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 4
+          }}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant='h6' gutterBottom>
               Top Pages

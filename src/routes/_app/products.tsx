@@ -125,7 +125,6 @@ function ProductsPage() {
           </Button>
         }
       />
-
       {/* Filters and Search */}
       <Box sx={{ mb: 3 }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -172,13 +171,18 @@ function ProductsPage() {
           </Button>
         </Stack>
       </Box>
-
       {/* Products Grid */}
       <Grid container spacing={3}>
         {products.map((product) => {
           const stockStatus = getStockStatus(product.stock);
           return (
-            <Grid item xs={12} sm={6} md={4} key={product.id}>
+            <Grid
+              key={product.id}
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 4
+              }}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardMedia
                   component="img"
@@ -235,7 +239,6 @@ function ProductsPage() {
           );
         })}
       </Grid>
-
       {/* Pagination */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">
