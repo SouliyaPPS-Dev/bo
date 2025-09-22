@@ -1,6 +1,7 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { CssBaseline } from '@mui/material';
+import { CssVarsProvider } from '@mui/material/styles';
 import { theme } from '@/theme';
 import { Suspense } from 'react';
 import Loading from '@/components/Loading';
@@ -18,7 +19,12 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <ThemeProvider theme={theme}>
+    <CssVarsProvider
+      theme={theme}
+      defaultMode='system'
+      modeStorageKey='app-color-scheme'
+      disableTransitionOnChange
+    >
       <CssBaseline />
       <AuthProvider>
         <Suspense fallback={<Loading />}>
@@ -28,6 +34,6 @@ function RootComponent() {
           <TanStackRouterDevtools position='bottom-right' />
         )}
       </AuthProvider>
-    </ThemeProvider>
+    </CssVarsProvider>
   );
 }

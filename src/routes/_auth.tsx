@@ -13,7 +13,8 @@ function AuthLayout() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        // Use theme tokens for both modes
+        background: 'linear-gradient(135deg, var(--mui-palette-background-default) 0%, var(--mui-palette-background-paper) 100%)',
       }}
     >
       <Container maxWidth='sm'>
@@ -23,7 +24,9 @@ function AuthLayout() {
             p: 4,
             borderRadius: 2,
             backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+            backgroundColor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
           <Stack spacing={2} alignItems='center' sx={{ mb: 3 }}>

@@ -12,6 +12,8 @@ import {
   Tooltip,
   Divider,
 } from '@mui/material';
+// color scheme handled via useThemeMode helper
+import { useThemeMode } from '@/theme/mode';
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
@@ -29,10 +31,10 @@ const DRAWER_WIDTH_COLLAPSED = 72;
 
 export function AppLayout({ children }: PropsWithChildren) {
   const theme = useTheme();
+  const { toggle, isDark } = useThemeMode();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleDrawerToggle = () => {
     if (isMobile) {
@@ -42,17 +44,20 @@ export function AppLayout({ children }: PropsWithChildren) {
     }
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    // You can implement actual dark mode theme switching here
-  };
+  const toggleDarkMode = () => toggle();
 
   const currentDrawerWidth = sidebarCollapsed
     ? DRAWER_WIDTH_COLLAPSED
     : DRAWER_WIDTH;
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.50' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        minHeight: '100vh',
+        bgcolor: 'background.default',
+      }}
+    >
       {/* Modern AppBar with gradient and glass effect */}
       <AppBar
         position='fixed'
@@ -64,8 +69,7 @@ export function AppLayout({ children }: PropsWithChildren) {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          background:
-            'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%)',
+          backgroundColor: 'background.paper',
           backdropFilter: 'blur(10px)',
           borderBottom: '1px solid',
           borderColor: 'divider',
@@ -127,10 +131,7 @@ export function AppLayout({ children }: PropsWithChildren) {
                 sx={{
                   position: 'relative',
                   borderRadius: 2,
-                  bgcolor: 'grey.100',
-                  '&:hover': {
-                    bgcolor: 'grey.200',
-                  },
+                  bgcolor: 'action.hover',
                   width: '100%',
                   display: 'flex',
                   alignItems: 'center',
@@ -161,12 +162,12 @@ export function AppLayout({ children }: PropsWithChildren) {
             sx={{ ml: 'auto' }}
           >
             {/* Dark Mode Toggle */}
-            <Tooltip title={darkMode ? 'Light Mode' : 'Dark Mode'}>
+            <Tooltip title={isDark ? 'Light Mode' : 'Dark Mode'}>
               <IconButton
                 onClick={toggleDarkMode}
                 sx={{ color: 'text.primary' }}
               >
-                {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                {isDark ? <LightModeIcon /> : <DarkModeIcon />}
               </IconButton>
             </Tooltip>
 
@@ -222,7 +223,7 @@ export function AppLayout({ children }: PropsWithChildren) {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          backgroundColor: 'grey.50',
+          backgroundColor: 'background.default',
           minHeight: '100vh',
         }}
       >

@@ -5,6 +5,7 @@ import { routeTree } from './routeTree.gen';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './services/tanstack-query/client';
 import './locales/i18n';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 
 if (import.meta.env.DEV) {
   // Lazy-start MSW in development for API mocking
@@ -44,6 +45,8 @@ if (!rootElement) throw new Error('Root element not found');
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
+    {/* Initialize MUI color scheme (prevents flash, persists preference) */}
+    <InitColorSchemeScript />
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>

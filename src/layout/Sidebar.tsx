@@ -1,34 +1,33 @@
 import {
+  Analytics as AnalyticsIcon,
+  Dashboard as DashboardIcon,
+  FiberManualRecord as DotIcon,
+  ExpandLess,
+  ExpandMore,
+  Inventory as InventoryIcon,
+  People as PeopleIcon,
+  Receipt as ReceiptIcon,
+  Settings as SettingsIcon,
+  Support as SupportIcon,
+} from '@mui/icons-material';
+import {
+  Avatar,
+  Box,
+  Chip,
+  Collapse,
+  Divider,
   Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
-  Divider,
-  Box,
-  Typography,
-  Avatar,
-  Collapse,
-  useTheme,
-  useMediaQuery,
-  Chip,
   Stack,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
-import {
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  Settings as SettingsIcon,
-  Analytics as AnalyticsIcon,
-  Inventory as InventoryIcon,
-  Receipt as ReceiptIcon,
-  Support as SupportIcon,
-  ExpandLess,
-  ExpandMore,
-  FiberManualRecord as DotIcon,
-  TrendingUp as TrendingUpIcon,
-} from '@mui/icons-material';
-import { useNavigate, useLocation } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
 interface NavigationItem {
@@ -240,7 +239,9 @@ export default function Sidebar({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)',
+        backgroundColor: 'background.paper',
+        borderRight: '1px solid',
+        borderColor: 'divider',
       }}
     >
       <Toolbar />
@@ -287,35 +288,6 @@ export default function Sidebar({
           {bottomNavigationItems.map((item) => renderNavigationItem(item))}
         </List>
       </Box>
-
-      {/* Footer Stats */}
-      {!collapsed && (
-        <Box sx={{ p: 2 }}>
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-            }}
-          >
-            <Stack spacing={1}>
-              <Stack direction='row' alignItems='center' spacing={1}>
-                <TrendingUpIcon fontSize='small' />
-                <Typography variant='caption' fontWeight={600}>
-                  Performance
-                </Typography>
-              </Stack>
-              <Typography variant='h6' fontWeight={700}>
-                +24.5%
-              </Typography>
-              <Typography variant='caption' sx={{ opacity: 0.9 }}>
-                vs last month
-              </Typography>
-            </Stack>
-          </Box>
-        </Box>
-      )}
     </Box>
   );
 

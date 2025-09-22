@@ -166,10 +166,21 @@ function SignIn() {
     <Box component='form' onSubmit={handleSubmit} noValidate>
       <Stack spacing={3}>
         <Box>
-          <Typography variant='h5' fontWeight={700} gutterBottom>
+          <Typography
+            variant='h5'
+            fontWeight={700}
+            gutterBottom
+            sx={{ color: 'primary.main' }}
+          >
             {t('signin')}
           </Typography>
-          <Typography variant='body2' color='text.secondary'>
+          <Typography
+            variant='body2'
+            sx={{
+              color: 'primary.main',
+              opacity: 0.8, // Slightly reduce opacity for better hierarchy
+            }}
+          >
             Welcome back! Please sign in to your account.
           </Typography>
         </Box>
@@ -216,6 +227,64 @@ function SignIn() {
             ),
           }}
           placeholder='Enter your email'
+          sx={[
+            {
+              '& .MuiInputLabel-root': {
+                color: 'text.secondary',
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: 'primary.main',
+              },
+              '& .MuiOutlinedInput-root': {
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                '& fieldset': { borderColor: 'divider' },
+                '&:hover fieldset': { borderColor: 'primary.main' },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'primary.main',
+                  boxShadow:
+                    '0 0 0 3px rgba(var(--mui-palette-primary-mainChannel) / 0.15)',
+                },
+              },
+              // Ensure high-contrast input text (entered value)
+              '& .MuiOutlinedInput-input': {
+                color: 'text.primary',
+                WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                opacity: 1,
+                fontWeight: 600,
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: 'text.secondary',
+                opacity: 0.9, // make placeholder highly readable
+              },
+              '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                color: 'text.secondary',
+              },
+              // Autofill styles (Chrome/Safari)
+              '& input:-webkit-autofill': {
+                WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                boxShadow: '0 0 0px 1000px var(--mui-palette-grey-50) inset',
+              },
+            },
+            // Light mode uses theme tokens (no hard-coded colors)
+            (theme) =>
+              theme.applyStyles('dark', {
+                '& .MuiOutlinedInput-root': {
+                  bgcolor: 'rgba(255,255,255,0.04)',
+                  '& fieldset': { borderColor: 'rgba(148,163,184,0.2)' },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'primary.main',
+                    boxShadow:
+                      '0 0 0 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  color: 'text.primary',
+                  WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                },
+              }),
+          ]}
         />
 
         {/* Password field */}
@@ -260,6 +329,64 @@ function SignIn() {
             ),
           }}
           placeholder='Enter your password'
+          sx={[
+            {
+              '& .MuiInputLabel-root': {
+                color: 'text.secondary',
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: 'primary.main',
+              },
+              '& .MuiOutlinedInput-root': {
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                '& fieldset': { borderColor: 'divider' },
+                '&:hover fieldset': { borderColor: 'primary.main' },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'primary.main',
+                  boxShadow:
+                    '0 0 0 3px rgba(var(--mui-palette-primary-mainChannel) / 0.15)',
+                },
+              },
+              // Ensure high-contrast input text (entered value)
+              '& .MuiOutlinedInput-input': {
+                color: 'text.primary',
+                WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                opacity: 1,
+                fontWeight: 600,
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: 'text.secondary',
+                opacity: 0.9,
+              },
+              '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                color: 'text.secondary',
+              },
+              // Autofill styles (Chrome/Safari)
+              '& input:-webkit-autofill': {
+                WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                boxShadow: '0 0 0px 1000px var(--mui-palette-grey-50) inset',
+              },
+            },
+            // Light mode uses theme tokens (no hard-coded colors)
+            (theme) =>
+              theme.applyStyles('dark', {
+                '& .MuiOutlinedInput-root': {
+                  bgcolor: 'rgba(255,255,255,0.04)',
+                  '& fieldset': { borderColor: 'rgba(148,163,184,0.2)' },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'primary.main',
+                    boxShadow:
+                      '0 0 0 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
+                  },
+                },
+                '& .MuiOutlinedInput-input': {
+                  color: 'text.primary',
+                  WebkitTextFillColor: 'var(--mui-palette-text-primary)',
+                },
+              }),
+          ]}
         />
 
         {/* Remember me and Forgot password */}
@@ -287,11 +414,25 @@ function SignIn() {
               />
             }
             label='Remember me'
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                color: 'primary.main',
+                fontSize: '0.875rem',
+              },
+            }}
           />
           <Link
             href='#'
             variant='body2'
-            sx={{ textDecoration: 'none' }}
+            sx={{
+              textDecoration: 'none',
+              color: 'primary.main',
+              fontWeight: 500,
+              '&:hover': {
+                textDecoration: 'underline',
+                color: 'primary.dark',
+              },
+            }}
             onClick={(e) => {
               e.preventDefault();
               // Handle forgot password
@@ -308,7 +449,14 @@ function SignIn() {
           disabled={loading}
           fullWidth
           size='large'
-          sx={{ py: 1.5 }}
+          sx={{
+            py: 1.5,
+            fontWeight: 600,
+            backgroundColor: 'primary.main',
+            '&:hover': {
+              backgroundColor: 'primary.dark',
+            },
+          }}
         >
           {loading ? (
             <CircularProgress size={24} color='inherit' />
@@ -319,11 +467,25 @@ function SignIn() {
 
         {/* Sign up link */}
         <Box textAlign='center'>
-          <Typography variant='body2' color='text.secondary'>
+          <Typography
+            variant='body2'
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.875rem',
+            }}
+          >
             Don't have an account?{' '}
             <Link
               href='#'
-              sx={{ textDecoration: 'none', fontWeight: 600 }}
+              sx={{
+                textDecoration: 'none',
+                fontWeight: 600,
+                color: 'secondary.main',
+                '&:hover': {
+                  textDecoration: 'underline',
+                  color: 'secondary.dark',
+                },
+              }}
               onClick={(e) => {
                 e.preventDefault();
                 // Navigate to signup page when implemented
@@ -336,7 +498,15 @@ function SignIn() {
 
         {/* Development hint */}
         {import.meta.env.DEV && (
-          <Alert severity='info' sx={{ mt: 2 }}>
+          <Alert
+            severity='info'
+            sx={{
+              mt: 2,
+              '& .MuiAlert-message': {
+                color: 'text.primary',
+              },
+            }}
+          >
             <Typography variant='caption'>
               <strong>Dev Mode:</strong> Use any email/password to sign in
               (e.g., admin@example.com / password123)
