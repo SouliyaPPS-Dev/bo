@@ -5,6 +5,7 @@ export { useThemeMode } from './mode';
 
 // MUI v7: Enable CSS variables + colorSchemes for modern dark/light theming
 export const theme = extendTheme({
+  colorSchemeSelector: 'class',
   colorSchemes: {
     light: {
       palette: {

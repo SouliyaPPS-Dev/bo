@@ -11,6 +11,22 @@ export function useThemeMode() {
   const currentMode = mode === 'system' ? resolvedSystemMode : (mode || 'light');
   const isDark = currentMode === 'dark';
 
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const attribute = 'data-mui-color-scheme';
+    const root = document.documentElement;
+    const body = document.body;
+    const appliedMode = currentMode;
+    if (root) {
+      root.setAttribute(attribute, appliedMode);
+      root.style.colorScheme = appliedMode;
+    }
+    if (body) {
+      body.setAttribute(attribute, appliedMode);
+      body.style.colorScheme = appliedMode;
+    }
+  }, [currentMode]);
+
   // Debug logging on mount and when mode changes
   // This must be called unconditionally before any early returns
   useEffect(() => {
@@ -66,4 +82,3 @@ export function useThemeMode() {
     toggle,
   } as const;
 }
-

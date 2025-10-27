@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from './services/tanstack-query/client';
 import './locales/i18n';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
-import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme';
 
@@ -50,12 +50,9 @@ if (!rootElement) throw new Error('Root element not found');
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     {/* Initialize MUI color scheme (prevents flash, persists preference) */}
-    <InitColorSchemeScript
-      attribute='data-mui-color-scheme'
-      defaultMode='light'
-    />
-    <CssVarsProvider theme={theme}>
-      <CssBaseline />
+    <InitColorSchemeScript attribute='class' />
+    <ThemeProvider theme={theme}>
+      <CssBaseline enableColorScheme />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         {import.meta.env.DEV && (
@@ -65,6 +62,6 @@ ReactDOM.createRoot(rootElement).render(
           />
         )}
       </QueryClientProvider>
-    </CssVarsProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
