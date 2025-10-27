@@ -25,11 +25,13 @@ import Sidebar from './Sidebar';
 import LanguageSwitcher from './LanguageSwitcher';
 import ProfilePopover from './ProfilePopover';
 import { PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DRAWER_WIDTH = 280;
 const DRAWER_WIDTH_COLLAPSED = 72;
 
 export function AppLayout({ children }: PropsWithChildren) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { toggle, isDark } = useThemeMode();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -121,7 +123,7 @@ export function AppLayout({ children }: PropsWithChildren) {
                 B
               </Avatar>
               <Typography variant='h6' fontWeight={600} color='text.primary'>
-                Backoffice
+                {t('backoffice')}
               </Typography>
             </Stack>
           )}
@@ -158,7 +160,7 @@ export function AppLayout({ children }: PropsWithChildren) {
                 <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
                 <Box
                   component='input'
-                  placeholder='Search...'
+                  placeholder={t('search')}
                   sx={{
                     border: 'none',
                     outline: 'none',
@@ -185,7 +187,7 @@ export function AppLayout({ children }: PropsWithChildren) {
           >
             {/* Theme Mode Toggle */}
             <Tooltip
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={isDark ? t('switchToLightMode') : t('switchToDarkMode')}
             >
               <IconButton
                 onClick={handleThemeToggle}
@@ -221,7 +223,7 @@ export function AppLayout({ children }: PropsWithChildren) {
             </Tooltip>
 
             {/* Notifications */}
-            <Tooltip title='Notifications'>
+            <Tooltip title={t('notifications')}>
               <IconButton sx={{ color: 'text.primary' }}>
                 <Badge badgeContent={4} color='error'>
                   <NotificationsIcon />

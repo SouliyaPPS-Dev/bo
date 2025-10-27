@@ -30,12 +30,14 @@ import {
 import PageContainer from '@/components/PageContainer';
 import PageHeader from '@/components/PageHeader';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_app/products')({
   component: ProductsPage,
 });
 
 function ProductsPage() {
+  const { t } = useTranslation();
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
@@ -109,19 +111,19 @@ function ProductsPage() {
   ];
 
   const getStockStatus = (stock: number) => {
-    if (stock === 0) return { label: 'Out of Stock', color: 'error' };
-    if (stock < 10) return { label: 'Low Stock', color: 'warning' };
-    return { label: 'In Stock', color: 'success' };
+    if (stock === 0) return { label: t('outOfStock'), color: 'error' };
+    if (stock < 10) return { label: t('lowStock'), color: 'warning' };
+    return { label: t('inStock'), color: 'success' };
   };
 
   return (
     <PageContainer>
       <PageHeader
-        title="Products"
-        subtitle="Manage your product inventory"
+        title={t('products')}
+        subtitle={t('manageProducts')}
         action={
-          <Button variant="contained" startIcon={<Add />}>
-            Add Product
+          <Button variant='contained' startIcon={<Add />}>
+            {t('addProduct')}
           </Button>
         }
       />
@@ -129,45 +131,45 @@ function ProductsPage() {
       <Box sx={{ mb: 3 }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <TextField
-            placeholder="Search products..."
-            size="small"
+            placeholder={t('searchProducts')}
+            size='small'
             sx={{ flexGrow: 1, maxWidth: { sm: 400 } }}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <Search />
                 </InputAdornment>
               ),
             }}
           />
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Category</InputLabel>
+          <FormControl size='small' sx={{ minWidth: 150 }}>
+            <InputLabel>{t('category')}</InputLabel>
             <Select
               value={category}
-              label="Category"
+              label={t('category')}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <MenuItem value="all">All Categories</MenuItem>
-              <MenuItem value="electronics">Electronics</MenuItem>
-              <MenuItem value="furniture">Furniture</MenuItem>
-              <MenuItem value="accessories">Accessories</MenuItem>
+              <MenuItem value='all'>{t('allCategories')}</MenuItem>
+              <MenuItem value='electronics'>{t('electronics')}</MenuItem>
+              <MenuItem value='furniture'>{t('furniture')}</MenuItem>
+              <MenuItem value='accessories'>{t('accessories')}</MenuItem>
             </Select>
           </FormControl>
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Sort By</InputLabel>
+          <FormControl size='small' sx={{ minWidth: 150 }}>
+            <InputLabel>{t('sortBy')}</InputLabel>
             <Select
               value={sortBy}
-              label="Sort By"
+              label={t('sortBy')}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <MenuItem value="name">Name</MenuItem>
-              <MenuItem value="price">Price</MenuItem>
-              <MenuItem value="stock">Stock</MenuItem>
-              <MenuItem value="rating">Rating</MenuItem>
+              <MenuItem value='name'>{t('name')}</MenuItem>
+              <MenuItem value='price'>{t('price')}</MenuItem>
+              <MenuItem value='stock'>{t('stock')}</MenuItem>
+              <MenuItem value='rating'>{t('rating')}</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="outlined" startIcon={<FilterList />}>
-            More Filters
+          <Button variant='outlined' startIcon={<FilterList />}>
+            {t('moreFilters')}
           </Button>
         </Stack>
       </Box>
@@ -181,57 +183,78 @@ function ProductsPage() {
               size={{
                 xs: 12,
                 sm: 6,
-                md: 4
-              }}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                md: 4,
+              }}
+            >
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 <CardMedia
-                  component="img"
-                  height="200"
+                  component='img'
+                  height='200'
                   image={product.image}
                   alt={product.name}
                   sx={{ bgcolor: 'grey.100' }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Stack spacing={1}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-                      <Typography variant="h6" component="div" sx={{ fontSize: '1.1rem' }}>
+                    <Stack
+                      direction='row'
+                      justifyContent='space-between'
+                      alignItems='flex-start'
+                    >
+                      <Typography
+                        variant='h6'
+                        component='div'
+                        sx={{ fontSize: '1.1rem' }}
+                      >
                         {product.name}
                       </Typography>
                       <Chip
                         label={stockStatus.label}
-                        size="small"
-                        color={stockStatus.color as 'success' | 'warning' | 'error'}
+                        size='small'
+                        color={
+                          stockStatus.color as 'success' | 'warning' | 'error'
+                        }
                       />
                     </Stack>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant='body2' color='text.secondary'>
                       {product.category}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant='body2' color='text.secondary'>
                       {product.description}
                     </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction='row' alignItems='center' spacing={1}>
                       <Star sx={{ color: 'warning.main', fontSize: 18 }} />
-                      <Typography variant="body2">{product.rating}</Typography>
+                      <Typography variant='body2'>{product.rating}</Typography>
                     </Stack>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                      <Typography variant="h6" color="primary.main">
+                    <Stack
+                      direction='row'
+                      justifyContent='space-between'
+                      alignItems='center'
+                    >
+                      <Typography variant='h6' color='primary.main'>
                         ${product.price}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Stock: {product.stock}
+                      <Typography variant='body2' color='text.secondary'>
+                        {t('stock')}: {product.stock}
                       </Typography>
                     </Stack>
                   </Stack>
                 </CardContent>
                 <CardActions sx={{ px: 2, pb: 2 }}>
-                  <Button size="small" startIcon={<Visibility />}>
-                    View
+                  <Button size='small' startIcon={<Visibility />}>
+                    {t('view')}
                   </Button>
-                  <Button size="small" startIcon={<Edit />}>
-                    Edit
+                  <Button size='small' startIcon={<Edit />}>
+                    {t('edit')}
                   </Button>
-                  <IconButton size="small" color="error" sx={{ ml: 'auto' }}>
-                    <Delete fontSize="small" />
+                  <IconButton size='small' color='error' sx={{ ml: 'auto' }}>
+                    <Delete fontSize='small' />
                   </IconButton>
                 </CardActions>
               </Card>
@@ -241,8 +264,8 @@ function ProductsPage() {
       </Grid>
       {/* Pagination */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Typography variant="body2" color="text.secondary">
-          Showing 1-6 of 24 products
+        <Typography variant='body2' color='text.secondary'>
+          {t('showing')} 1-6 {t('of')} 24 {t('productsCount')}
         </Typography>
       </Box>
     </PageContainer>

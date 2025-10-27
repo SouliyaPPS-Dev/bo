@@ -155,8 +155,10 @@ export const theme = extendTheme({
     borderRadius: 12, // Slightly more rounded for modern look
   },
   // Enhanced typography with better font stack
+  // Noto Sans Lao is prioritized for Lao script support, Inter for English
   typography: {
     fontFamily: [
+      '"Noto Sans Lao"',
       'Inter',
       '-apple-system',
       'BlinkMacSystemFont',

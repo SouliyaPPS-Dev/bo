@@ -138,9 +138,7 @@ export default function SignInForm() {
     auth
       .signIn({ email: values.email, password: values.password })
       .then(() => navigate({ to: '/dashboard' }))
-      .catch(() =>
-        setErrors({ general: 'Invalid email or password. Please try again.' })
-      )
+      .catch(() => setErrors({ general: t('invalidCredentials') }))
       .finally(() => setLoading(false));
   };
 
@@ -171,7 +169,9 @@ export default function SignInForm() {
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <Email color={touched.email && errors.email ? 'error' : 'action'} />
+                <Email
+                  color={touched.email && errors.email ? 'error' : 'action'}
+                />
               </InputAdornment>
             ),
           }}
@@ -196,12 +196,21 @@ export default function SignInForm() {
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <Lock color={touched.password && errors.password ? 'error' : 'action'} />
+                <Lock
+                  color={
+                    touched.password && errors.password ? 'error' : 'action'
+                  }
+                />
               </InputAdornment>
             ),
             endAdornment: (
               <InputAdornment position='end'>
-                <IconButton aria-label='toggle password visibility' onClick={() => setShowPassword((s) => !s)} edge='end' size='small'>
+                <IconButton
+                  aria-label='toggle password visibility'
+                  onClick={() => setShowPassword((s) => !s)}
+                  edge='end'
+                  size='small'
+                >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -211,7 +220,11 @@ export default function SignInForm() {
           sx={textFieldStyle}
         />
 
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+        <Stack
+          direction='row'
+          justifyContent='space-between'
+          alignItems='center'
+        >
           <FormControlLabel
             control={
               <Checkbox
@@ -220,7 +233,7 @@ export default function SignInForm() {
                 color='primary'
               />
             }
-            label='Remember me'
+            label={t('rememberMe')}
             sx={{
               '& .MuiFormControlLabel-label': {
                 color: 'primary.main',
@@ -228,28 +241,72 @@ export default function SignInForm() {
               },
             }}
           />
-          <Link href='#' variant='body2' sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 500, '&:hover': { textDecoration: 'underline', color: 'primary.dark' } }} onClick={(e) => e.preventDefault()}>
-            Forgot password?
+          <Link
+            href='#'
+            variant='body2'
+            sx={{
+              textDecoration: 'none',
+              color: 'primary.main',
+              fontWeight: 500,
+              '&:hover': { textDecoration: 'underline', color: 'primary.dark' },
+            }}
+            onClick={(e) => e.preventDefault()}
+          >
+            {t('forgotPassword')}
           </Link>
         </Stack>
 
-        <Button type='submit' variant='contained' disabled={loading} fullWidth size='large' sx={{ py: 1.5, fontWeight: 600, backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' } }}>
-          {loading ? <CircularProgress size={24} color='inherit' /> : t('submit')}
+        <Button
+          type='submit'
+          variant='contained'
+          disabled={loading}
+          fullWidth
+          size='large'
+          sx={{
+            py: 1.5,
+            fontWeight: 600,
+            backgroundColor: 'primary.main',
+            '&:hover': { backgroundColor: 'primary.dark' },
+          }}
+        >
+          {loading ? (
+            <CircularProgress size={24} color='inherit' />
+          ) : (
+            t('submit')
+          )}
         </Button>
 
         <Box textAlign='center'>
-          <Typography variant='body2' sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-            Don't have an account?{' '}
-            <Link href='#' sx={{ textDecoration: 'none', fontWeight: 600, color: 'secondary.main', '&:hover': { textDecoration: 'underline', color: 'secondary.dark' } }} onClick={(e) => e.preventDefault()}>
-              Sign up
+          <Typography
+            variant='body2'
+            sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+          >
+            {t('dontHaveAccount')}{' '}
+            <Link
+              href='#'
+              sx={{
+                textDecoration: 'none',
+                fontWeight: 600,
+                color: 'secondary.main',
+                '&:hover': {
+                  textDecoration: 'underline',
+                  color: 'secondary.dark',
+                },
+              }}
+              onClick={(e) => e.preventDefault()}
+            >
+              {t('signUp')}
             </Link>
           </Typography>
         </Box>
 
         {import.meta.env.DEV && (
-          <Alert severity='info' sx={{ mt: 2, '& .MuiAlert-message': { color: 'text.primary' } }}>
+          <Alert
+            severity='info'
+            sx={{ mt: 2, '& .MuiAlert-message': { color: 'text.primary' } }}
+          >
             <Typography variant='caption'>
-              <strong>Dev Mode:</strong> Use any email/password to sign in (e.g., admin@example.com / password123)
+              <strong>{t('devModeNote')}</strong> {t('devModeDescription')}
             </Typography>
           </Alert>
         )}

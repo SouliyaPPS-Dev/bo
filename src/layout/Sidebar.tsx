@@ -1,7 +1,6 @@
 import {
   Analytics as AnalyticsIcon,
   Dashboard as DashboardIcon,
-  FiberManualRecord as DotIcon,
   ExpandLess,
   ExpandMore,
   Inventory as InventoryIcon,
@@ -29,6 +28,7 @@ import {
 } from '@mui/material';
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface NavigationItem {
   label: string;
@@ -54,62 +54,6 @@ interface SidebarProps {
   collapsedWidth?: number;
 }
 
-const navigationItems: NavigationItem[] = [
-  {
-    label: 'Dashboard',
-    path: '/dashboard',
-    icon: <DashboardIcon />,
-    badge: 'New',
-    badgeColor: 'primary',
-  },
-  {
-    label: 'Analytics',
-    path: '/analytics',
-    icon: <AnalyticsIcon />,
-    children: [
-      {
-        label: 'Overview',
-        path: '/analytics/overview',
-        icon: <DotIcon sx={{ fontSize: 8 }} />,
-      },
-      {
-        label: 'Reports',
-        path: '/analytics/reports',
-        icon: <DotIcon sx={{ fontSize: 8 }} />,
-      },
-      {
-        label: 'Real-time',
-        path: '/analytics/realtime',
-        icon: <DotIcon sx={{ fontSize: 8 }} />,
-      },
-    ],
-  },
-  {
-    label: 'Users',
-    path: '/users',
-    icon: <PeopleIcon />,
-    badge: 12,
-    badgeColor: 'error',
-  },
-  {
-    label: 'Products',
-    path: '/products',
-    icon: <InventoryIcon />,
-  },
-  {
-    label: 'Orders',
-    path: '/orders',
-    icon: <ReceiptIcon />,
-    badge: 5,
-    badgeColor: 'warning',
-  },
-];
-
-const bottomNavigationItems: NavigationItem[] = [
-  { label: 'Support', path: '/support', icon: <SupportIcon /> },
-  { label: 'Settings', path: '/settings', icon: <SettingsIcon /> },
-];
-
 export default function Sidebar({
   mobileOpen = false,
   onMobileClose,
@@ -117,6 +61,7 @@ export default function Sidebar({
   drawerWidth = 280,
   collapsedWidth = 72,
 }: SidebarProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -146,6 +91,70 @@ export default function Sidebar({
       location.pathname === path || location.pathname.startsWith(path + '/')
     );
   };
+
+  // Navigation items with translations
+  const navigationItems: NavigationItem[] = [
+    {
+      label: t('dashboard'),
+      path: '/dashboard',
+      icon: <DashboardIcon />,
+      badge: t('new'),
+      badgeColor: 'primary',
+    },
+    {
+      label: t('analytics'),
+      icon: <AnalyticsIcon />,
+      children: [
+        {
+          label: t('overview'),
+          path: '/analytics/overview',
+          icon: <DashboardIcon fontSize='small' />,
+        },
+        {
+          label: t('reports'),
+          path: '/analytics/reports',
+          icon: <ReceiptIcon fontSize='small' />,
+        },
+        {
+          label: t('realtime'),
+          path: '/analytics/realtime',
+          icon: <AnalyticsIcon fontSize='small' />,
+        },
+      ],
+    },
+    {
+      label: t('users'),
+      path: '/users',
+      icon: <PeopleIcon />,
+      badge: 12,
+      badgeColor: 'error',
+    },
+    {
+      label: t('products'),
+      path: '/products',
+      icon: <InventoryIcon />,
+    },
+    {
+      label: t('orders'),
+      path: '/orders',
+      icon: <ReceiptIcon />,
+      badge: 5,
+      badgeColor: 'warning',
+    },
+  ];
+
+  const bottomNavigationItems: NavigationItem[] = [
+    {
+      label: t('support'),
+      path: '/support',
+      icon: <SupportIcon />,
+    },
+    {
+      label: t('settings'),
+      path: '/settings',
+      icon: <SettingsIcon />,
+    },
+  ];
 
   const renderNavigationItem = (item: NavigationItem, depth = 0) => {
     const hasChildren = item.children && item.children.length > 0;
@@ -263,10 +272,10 @@ export default function Sidebar({
             </Avatar>
             <Box>
               <Typography variant='h6' fontWeight={700} color='text.primary'>
-                Backoffice
+                {t('backoffice')}
               </Typography>
               <Typography variant='caption' color='text.secondary'>
-                Admin Dashboard
+                {t('adminDashboard')}
               </Typography>
             </Box>
           </Stack>

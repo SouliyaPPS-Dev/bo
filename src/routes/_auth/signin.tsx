@@ -29,7 +29,7 @@ function SignIn() {
             {t('signin')}
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            Welcome back! Please sign in to your account.
+            {t('signInSubtitle')}
           </Typography>
         </Box>
         <SignInForm />
