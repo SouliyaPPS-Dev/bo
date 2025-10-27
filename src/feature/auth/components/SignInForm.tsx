@@ -60,8 +60,8 @@ const textFieldStyle: SxProps<Theme> = [
   (theme: Theme) =>
     theme.applyStyles('dark', {
       '& .MuiOutlinedInput-root': {
-        bgcolor: 'rgba(255,255,255,0.04)',
-        '& fieldset': { borderColor: 'rgba(148,163,184,0.2)' },
+        bgcolor: 'action.hover',
+        '& fieldset': { borderColor: 'divider' },
         '&:hover fieldset': { borderColor: 'primary.main' },
         '&.Mui-focused fieldset': {
           borderColor: 'primary.main',

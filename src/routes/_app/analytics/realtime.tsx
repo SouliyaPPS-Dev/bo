@@ -38,12 +38,12 @@ function RealtimeAnalyticsPage() {
   return (
     <PageContainer>
       <PageHeader
-        title="Real-time Analytics"
-        subtitle="Monitor live user activity and engagement"
+        title='Real-time Analytics'
+        subtitle='Monitor live user activity and engagement'
         action={
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction='row' alignItems='center' spacing={1}>
             <Circle sx={{ color: 'success.main', fontSize: 12 }} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='body2' color='text.secondary'>
               Live
             </Typography>
           </Stack>
@@ -54,16 +54,27 @@ function RealtimeAnalyticsPage() {
         <Grid
           size={{
             xs: 12,
-            md: 3
-          }}>
-          <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+            md: 3,
+          }}
+        >
+          <Card
+            sx={{
+              background: (theme) =>
+                `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              color: 'primary.contrastText',
+            }}
+          >
             <CardContent>
               <Stack spacing={2}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                  direction='row'
+                  justifyContent='space-between'
+                  alignItems='center'
+                >
                   <People sx={{ color: 'white', fontSize: 32 }} />
                   <Chip
-                    label="LIVE"
-                    size="small"
+                    label='LIVE'
+                    size='small'
                     sx={{
                       bgcolor: 'white',
                       color: 'primary.main',
@@ -72,16 +83,19 @@ function RealtimeAnalyticsPage() {
                   />
                 </Stack>
                 <Box>
-                  <Typography variant="h2" fontWeight={700} color="white">
+                  <Typography variant='h2' fontWeight={700} color='white'>
                     {activeUsers}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                  <Typography
+                    variant='body2'
+                    sx={{ color: 'primary.contrastText', opacity: 0.8 }}
+                  >
                     Active Users Now
                   </Typography>
                 </Box>
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction='row' alignItems='center' spacing={1}>
                   <TrendingUp sx={{ color: 'white', fontSize: 16 }} />
-                  <Typography variant="body2" color="white">
+                  <Typography variant='body2' color='white'>
                     +12% from last hour
                   </Typography>
                 </Stack>
@@ -94,8 +108,9 @@ function RealtimeAnalyticsPage() {
         <Grid
           size={{
             xs: 12,
-            md: 9
-          }}>
+            md: 9,
+          }}
+        >
           <Grid container spacing={2}>
             {[
               { label: 'Page Views/Min', value: '1,234', change: '+5.2%' },
@@ -107,19 +122,24 @@ function RealtimeAnalyticsPage() {
                 key={index}
                 size={{
                   xs: 6,
-                  md: 3
-                }}>
+                  md: 3,
+                }}
+              >
                 <Paper sx={{ p: 2 }}>
                   <Stack spacing={1}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant='body2' color='text.secondary'>
                       {stat.label}
                     </Typography>
-                    <Typography variant="h5" fontWeight={600}>
+                    <Typography variant='h5' fontWeight={600}>
                       {stat.value}
                     </Typography>
                     <Typography
-                      variant="caption"
-                      color={stat.change.startsWith('+') ? 'success.main' : 'error.main'}
+                      variant='caption'
+                      color={
+                        stat.change.startsWith('+')
+                          ? 'success.main'
+                          : 'error.main'
+                      }
                       fontWeight={600}
                     >
                       {stat.change}
@@ -135,27 +155,33 @@ function RealtimeAnalyticsPage() {
         <Grid
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant='h6' gutterBottom>
               Recent Activity
             </Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               {recentActivities.map((activity, index) => (
-                <Stack key={index} direction="row" spacing={2} alignItems="center">
+                <Stack
+                  key={index}
+                  direction='row'
+                  spacing={2}
+                  alignItems='center'
+                >
                   <Avatar sx={{ width: 32, height: 32, fontSize: '0.875rem' }}>
                     {activity.avatar}
                   </Avatar>
                   <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="body2" fontWeight={500}>
+                    <Typography variant='body2' fontWeight={500}>
                       {activity.user}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='caption' color='text.secondary'>
                       {activity.action}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant='caption' color='text.secondary'>
                     {activity.time}
                   </Typography>
                 </Stack>
@@ -168,26 +194,27 @@ function RealtimeAnalyticsPage() {
         <Grid
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant='h6' gutterBottom>
               Top Pages (Live)
             </Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               {topPages.map((item, index) => (
                 <Box key={index}>
-                  <Stack direction="row" justifyContent="space-between" mb={1}>
-                    <Typography variant="body2">{item.page}</Typography>
-                    <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction='row' justifyContent='space-between' mb={1}>
+                    <Typography variant='body2'>{item.page}</Typography>
+                    <Stack direction='row' spacing={1} alignItems='center'>
                       <People sx={{ fontSize: 14, color: 'text.secondary' }} />
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant='body2' fontWeight={600}>
                         {item.users}
                       </Typography>
                     </Stack>
                   </Stack>
                   <LinearProgress
-                    variant="determinate"
+                    variant='determinate'
                     value={item.percentage}
                     sx={{ height: 6, borderRadius: 3 }}
                   />
@@ -200,9 +227,14 @@ function RealtimeAnalyticsPage() {
         {/* Geographic Distribution */}
         <Grid size={12}>
           <Paper sx={{ p: 3 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-              <Typography variant="h6">Geographic Distribution</Typography>
-              <Language color="action" />
+            <Stack
+              direction='row'
+              justifyContent='space-between'
+              alignItems='center'
+              mb={3}
+            >
+              <Typography variant='h6'>Geographic Distribution</Typography>
+              <Language color='action' />
             </Stack>
             <Grid container spacing={2}>
               {locations.map((location, index) => (
@@ -211,19 +243,24 @@ function RealtimeAnalyticsPage() {
                   size={{
                     xs: 12,
                     sm: 6,
-                    md: 2.4
-                  }}>
-                  <Card variant="outlined">
+                    md: 2.4,
+                  }}
+                >
+                  <Card variant='outlined'>
                     <CardContent>
-                      <Stack spacing={1} alignItems="center">
-                        <Typography variant="h4">{location.flag}</Typography>
-                        <Typography variant="body2" fontWeight={500}>
+                      <Stack spacing={1} alignItems='center'>
+                        <Typography variant='h4'>{location.flag}</Typography>
+                        <Typography variant='body2' fontWeight={500}>
                           {location.country}
                         </Typography>
-                        <Typography variant="h6" fontWeight={700} color="primary.main">
+                        <Typography
+                          variant='h6'
+                          fontWeight={700}
+                          color='primary.main'
+                        >
                           {location.users}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant='caption' color='text.secondary'>
                           users online
                         </Typography>
                       </Stack>
@@ -238,9 +275,14 @@ function RealtimeAnalyticsPage() {
         {/* Device Types */}
         <Grid size={12}>
           <Paper sx={{ p: 3 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-              <Typography variant="h6">Device Types (Live)</Typography>
-              <Devices color="action" />
+            <Stack
+              direction='row'
+              justifyContent='space-between'
+              alignItems='center'
+              mb={3}
+            >
+              <Typography variant='h6'>Device Types (Live)</Typography>
+              <Devices color='action' />
             </Stack>
             <Grid container spacing={3}>
               {[
@@ -252,19 +294,24 @@ function RealtimeAnalyticsPage() {
                   key={index}
                   size={{
                     xs: 12,
-                    md: 4
-                  }}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography variant="h4">{item.icon}</Typography>
+                    md: 4,
+                  }}
+                >
+                  <Stack direction='row' spacing={2} alignItems='center'>
+                    <Typography variant='h4'>{item.icon}</Typography>
                     <Box sx={{ flexGrow: 1 }}>
-                      <Stack direction="row" justifyContent="space-between" mb={1}>
-                        <Typography variant="body2">{item.device}</Typography>
-                        <Typography variant="body2" fontWeight={600}>
+                      <Stack
+                        direction='row'
+                        justifyContent='space-between'
+                        mb={1}
+                      >
+                        <Typography variant='body2'>{item.device}</Typography>
+                        <Typography variant='body2' fontWeight={600}>
                           {item.users} users
                         </Typography>
                       </Stack>
                       <LinearProgress
-                        variant="determinate"
+                        variant='determinate'
                         value={item.percentage}
                         sx={{ height: 8, borderRadius: 4 }}
                       />

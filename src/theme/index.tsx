@@ -1,44 +1,46 @@
-import { createTheme } from '@mui/material/styles';
+import { extendTheme } from '@mui/material/styles';
+
+// Export the useThemeMode hook for easy access
+export { useThemeMode } from './mode';
 
 // MUI v7: Enable CSS variables + colorSchemes for modern dark/light theming
-export const theme = createTheme({
-  cssVariables: true,
+export const theme = extendTheme({
   colorSchemes: {
     light: {
       palette: {
         mode: 'light',
-        // Modern primary colors with better contrast
+        // Light mode - vibrant and bright colors
         primary: {
-          main: '#2563EB', // blue-600 - more vibrant than default
-          light: '#3B82F6', // blue-500
-          dark: '#1D4ED8', // blue-700
+          main: '#2563EB', // Deeper blue for light mode
+          light: '#3B82F6',
+          dark: '#1D4ED8',
           contrastText: '#FFFFFF',
         },
         secondary: {
-          main: '#7C3AED', // violet-600 - more modern than magenta
-          light: '#8B5CF6', // violet-500
-          dark: '#6D28D9', // violet-700
+          main: '#7C3AED', // Deeper violet for light mode
+          light: '#8B5CF6',
+          dark: '#6D28D9',
           contrastText: '#FFFFFF',
         },
         error: {
-          main: '#DC2626', // red-600
-          light: '#EF4444', // red-500
-          dark: '#B91C1C', // red-700
+          main: '#DC2626', // Deeper red for light mode
+          light: '#EF4444',
+          dark: '#B91C1C',
         },
         warning: {
-          main: '#D97706', // amber-600
-          light: '#F59E0B', // amber-500
-          dark: '#B45309', // amber-700
+          main: '#D97706', // Deeper amber for light mode
+          light: '#F59E0B',
+          dark: '#B45309',
         },
         info: {
-          main: '#0891B2', // cyan-600
-          light: '#06B6D4', // cyan-500
-          dark: '#0E7490', // cyan-700
+          main: '#0891B2', // Deeper cyan for light mode
+          light: '#06B6D4',
+          dark: '#0E7490',
         },
         success: {
-          main: '#059669', // emerald-600
-          light: '#10B981', // emerald-500
-          dark: '#047857', // emerald-700
+          main: '#059669', // Deeper emerald for light mode
+          light: '#10B981',
+          dark: '#047857',
         },
         // Modern neutral backgrounds
         background: {
@@ -78,38 +80,38 @@ export const theme = createTheme({
     dark: {
       palette: {
         mode: 'dark',
-        // Optimized dark mode colors
+        // Dark mode - lighter and more vibrant colors for better visibility
         primary: {
-          main: '#3B82F6', // blue-500 - perfect for dark backgrounds
-          light: '#60A5FA', // blue-400
-          dark: '#2563EB', // blue-600
-          contrastText: '#FFFFFF',
+          main: '#60A5FA', // Lighter blue for dark mode
+          light: '#93C5FD',
+          dark: '#3B82F6',
+          contrastText: '#0F172A',
         },
         secondary: {
-          main: '#A78BFA', // violet-400
-          light: '#C4B5FD', // violet-300
-          dark: '#8B5CF6', // violet-500
-          contrastText: '#FFFFFF',
+          main: '#A78BFA', // Lighter violet for dark mode
+          light: '#C4B5FD',
+          dark: '#8B5CF6',
+          contrastText: '#0F172A',
         },
         error: {
-          main: '#F87171', // red-400
-          light: '#FCA5A5', // red-300
-          dark: '#EF4444', // red-500
+          main: '#F87171', // Lighter red for dark mode
+          light: '#FCA5A5',
+          dark: '#EF4444',
         },
         warning: {
-          main: '#FBBF24', // amber-400
-          light: '#FCD34D', // amber-300
-          dark: '#F59E0B', // amber-500
+          main: '#FBBF24', // Lighter amber for dark mode
+          light: '#FCD34D',
+          dark: '#F59E0B',
         },
         info: {
-          main: '#22D3EE', // cyan-400
-          light: '#67E8F9', // cyan-300
-          dark: '#06B6D4', // cyan-500
+          main: '#22D3EE', // Lighter cyan for dark mode
+          light: '#67E8F9',
+          dark: '#06B6D4',
         },
         success: {
-          main: '#34D399', // emerald-400
-          light: '#6EE7B7', // emerald-300
-          dark: '#10B981', // emerald-500
+          main: '#34D399', // Lighter emerald for dark mode
+          light: '#6EE7B7',
+          dark: '#10B981',
         },
         // Dark backgrounds with proper contrast
         background: {
@@ -131,7 +133,7 @@ export const theme = createTheme({
           disabledBackground: '#334155', // slate-700
           focus: '#1E40AF', // blue-800 - clear focus
         },
-        // Dark grey palette
+        // Dark grey palette (inverted for dark mode)
         grey: {
           50: '#0F172A',
           100: '#1E293B',
