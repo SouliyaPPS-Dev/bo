@@ -210,8 +210,17 @@ export const theme = createTheme({
       textTransform: 'none' as const, // More modern - no uppercase
     },
   },
-  // Enhanced component defaults
+  // Enhanced component defaults with smooth theme transitions
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          // Smooth transition for background color changes
+          transition:
+            'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -219,6 +228,7 @@ export const theme = createTheme({
           textTransform: 'none',
           fontWeight: 500,
           boxShadow: 'none',
+          transition: 'all 0.2s ease-in-out',
           '&:hover': {
             boxShadow: 'none',
           },
@@ -231,6 +241,8 @@ export const theme = createTheme({
           borderRadius: 12,
           boxShadow:
             '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          transition:
+            'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
         },
       },
     },
@@ -238,6 +250,24 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
+          transition:
+            'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          transition:
+            'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          transition:
+            'background-color 0.3s ease-in-out, border-color 0.3s ease-in-out',
         },
       },
     },

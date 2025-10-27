@@ -13,8 +13,12 @@ function AuthLayout() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // Use theme tokens for both modes
-        background: 'linear-gradient(135deg, var(--mui-palette-background-default) 0%, var(--mui-palette-background-paper) 100%)',
+        // Dynamic gradient that adapts to light/dark mode
+        background: (theme) =>
+          theme.palette.mode === 'dark'
+            ? `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`
+            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
+        transition: 'background 0.3s ease-in-out',
       }}
     >
       <Container maxWidth='sm'>

@@ -7,6 +7,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from './services/tanstack-query/client';
 import './locales/i18n';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { theme } from './theme';
 
 if (import.meta.env.DEV) {
   // Lazy-start MSW in development for API mocking
@@ -51,14 +54,17 @@ ReactDOM.createRoot(rootElement).render(
       attribute='data-mui-color-scheme'
       defaultMode='light'
     />
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      {import.meta.env.DEV && (
-        <ReactQueryDevtools
-          initialIsOpen={false}
-          buttonPosition='bottom-left'
-        />
-      )}
-    </QueryClientProvider>
+    <CssVarsProvider theme={theme}>
+      <CssBaseline />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        {import.meta.env.DEV && (
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition='bottom-left'
+          />
+        )}
+      </QueryClientProvider>
+    </CssVarsProvider>
   </React.StrictMode>
 );

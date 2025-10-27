@@ -1,7 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from '@/theme';
 import { Suspense } from 'react';
 import Loading from '@/components/Loading';

@@ -20,10 +20,15 @@ function SignIn() {
     <Box>
       <Stack spacing={3}>
         <Box>
-          <Typography variant='h5' fontWeight={700} gutterBottom sx={{ color: 'primary.main' }}>
+          <Typography
+            variant='h5'
+            fontWeight={700}
+            gutterBottom
+            color='text.primary'
+          >
             {t('signin')}
           </Typography>
-          <Typography variant='body2' sx={{ color: 'primary.main', opacity: 0.8 }}>
+          <Typography variant='body2' color='text.secondary'>
             Welcome back! Please sign in to your account.
           </Typography>
         </Box>
