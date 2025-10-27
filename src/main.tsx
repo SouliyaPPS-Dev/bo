@@ -47,11 +47,17 @@ if (!rootElement) throw new Error('Root element not found');
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     {/* Initialize MUI color scheme (prevents flash, persists preference) */}
-    <InitColorSchemeScript />
+    <InitColorSchemeScript
+      attribute='data-mui-color-scheme'
+      defaultMode='light'
+    />
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       {import.meta.env.DEV && (
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' />
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition='bottom-left'
+        />
       )}
     </QueryClientProvider>
   </React.StrictMode>

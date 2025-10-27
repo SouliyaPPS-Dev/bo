@@ -44,7 +44,16 @@ export function AppLayout({ children }: PropsWithChildren) {
     }
   };
 
-  const toggleDarkMode = () => toggle();
+  const handleThemeToggle = () => {
+    console.log('[AppLayout] Theme toggle button clicked');
+    console.log('[AppLayout] Current isDark:', isDark);
+    try {
+      toggle();
+      console.log('[AppLayout] Toggle function called successfully');
+    } catch (error) {
+      console.error('[AppLayout] Failed to toggle theme:', error);
+    }
+  };
 
   const currentDrawerWidth = sidebarCollapsed
     ? DRAWER_WIDTH_COLLAPSED
@@ -137,17 +146,30 @@ export function AppLayout({ children }: PropsWithChildren) {
                   alignItems: 'center',
                   px: 2,
                   py: 1,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  transition: 'all 0.2s',
+                  '&:focus-within': {
+                    borderColor: 'primary.main',
+                    bgcolor: 'background.paper',
+                  },
                 }}
               >
                 <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
-                <input
+                <Box
+                  component='input'
                   placeholder='Search...'
-                  style={{
+                  sx={{
                     border: 'none',
                     outline: 'none',
                     background: 'transparent',
                     width: '100%',
                     fontSize: '14px',
+                    color: 'text.primary',
+                    '&::placeholder': {
+                      color: 'text.disabled',
+                      opacity: 1,
+                    },
                   }}
                 />
               </Box>
@@ -161,13 +183,40 @@ export function AppLayout({ children }: PropsWithChildren) {
             alignItems='center'
             sx={{ ml: 'auto' }}
           >
-            {/* Dark Mode Toggle */}
-            <Tooltip title={isDark ? 'Light Mode' : 'Dark Mode'}>
+            {/* Theme Mode Toggle */}
+            <Tooltip
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
               <IconButton
-                onClick={toggleDarkMode}
-                sx={{ color: 'text.primary' }}
+                onClick={handleThemeToggle}
+                sx={{
+                  color: 'text.primary',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                    transform: 'scale(1.05)',
+                  },
+                  '&:active': {
+                    transform: 'scale(0.95)',
+                  },
+                }}
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
               >
-                {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+                {isDark ? (
+                  <LightModeIcon
+                    sx={{
+                      transition: 'transform 0.2s ease-in-out',
+                      '&:hover': { transform: 'rotate(180deg)' },
+                    }}
+                  />
+                ) : (
+                  <DarkModeIcon
+                    sx={{
+                      transition: 'transform 0.2s ease-in-out',
+                      '&:hover': { transform: 'rotate(180deg)' },
+                    }}
+                  />
+                )}
               </IconButton>
             </Tooltip>
 

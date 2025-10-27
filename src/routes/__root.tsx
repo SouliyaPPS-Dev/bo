@@ -20,7 +20,8 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      {/* CssBaseline must come after ThemeProvider to apply theme styles */}
+      <CssBaseline enableColorScheme />
       <AuthProvider>
         <Suspense fallback={<Loading />}>
           <Outlet />
