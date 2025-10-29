@@ -1,5 +1,20 @@
 import { withToken } from '@/services/http/private';
 
+// Query Keys Management - Following TanStack Query rules
+export const PRODUCTS_QUERY_KEYS = {
+  ALL: ['products'] as const,
+  LIST: (token: string | null) => ['products', 'list', token] as const,
+  DETAIL: (token: string | null, id: string) => ['products', 'detail', token, id] as const,
+} as const;
+
+// API Error Type - Following documented error structure
+export interface ApiError {
+  code: string;
+  message: string;
+  detail?: string;
+  status: number;
+}
+
 export type Product = {
   id: string;
   name: string;
