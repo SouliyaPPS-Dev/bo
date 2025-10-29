@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/_auth/signin'
 import { Route as AppUsersRouteImport } from './routes/_app/users'
 import { Route as AppSupportRouteImport } from './routes/_app/support'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthSigninRoute = AuthSigninRouteImport.update({
   id: '/signin',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/support': typeof AppSupportRoute
   '/users': typeof AppUsersRoute
   '/signin': typeof AuthSigninRoute
+  '/signup': typeof AuthSignupRoute
   '/analytics/overview': typeof AppAnalyticsOverviewRoute
   '/analytics/realtime': typeof AppAnalyticsRealtimeRoute
   '/analytics/reports': typeof AppAnalyticsReportsRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/support': typeof AppSupportRoute
   '/users': typeof AppUsersRoute
   '/signin': typeof AuthSigninRoute
+  '/signup': typeof AuthSignupRoute
   '/analytics/overview': typeof AppAnalyticsOverviewRoute
   '/analytics/realtime': typeof AppAnalyticsRealtimeRoute
   '/analytics/reports': typeof AppAnalyticsReportsRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/_app/support': typeof AppSupportRoute
   '/_app/users': typeof AppUsersRoute
   '/_auth/signin': typeof AuthSigninRoute
+  '/_auth/signup': typeof AuthSignupRoute
   '/_app/analytics/overview': typeof AppAnalyticsOverviewRoute
   '/_app/analytics/realtime': typeof AppAnalyticsRealtimeRoute
   '/_app/analytics/reports': typeof AppAnalyticsReportsRoute
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/users'
     | '/signin'
+    | '/signup'
     | '/analytics/overview'
     | '/analytics/realtime'
     | '/analytics/reports'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/users'
     | '/signin'
+    | '/signup'
     | '/analytics/overview'
     | '/analytics/realtime'
     | '/analytics/reports'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/_app/support'
     | '/_app/users'
     | '/_auth/signin'
+    | '/_auth/signup'
     | '/_app/analytics/overview'
     | '/_app/analytics/realtime'
     | '/_app/analytics/reports'
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/signup': {
+      id: '/_auth/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/signin': {
       id: '/_auth/signin'
@@ -334,10 +353,12 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
   AuthSigninRoute: typeof AuthSigninRoute
+  AuthSignupRoute: typeof AuthSignupRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthSigninRoute: AuthSigninRoute,
+  AuthSignupRoute: AuthSignupRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

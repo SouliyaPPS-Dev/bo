@@ -1,120 +1,168 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Alert,
   Box,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Typography,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   Chip,
-  Stack,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
-  TextField,
   InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { 
-  Search, 
-  Add, 
-  Edit, 
-  Delete, 
-  Visibility,
-  FilterList,
-  Star
-} from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
+import { Add, Delete, Edit, Search } from '@mui/icons-material';
+import type { FormEvent } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageContainer from '@/components/PageContainer';
 import PageHeader from '@/components/PageHeader';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/services/auth';
+import * as productsApi from '@/services/api/products';
+import type { Product, ProductPayload } from '@/services/api/products';
 
 export const Route = createFileRoute('/_app/products')({
   component: ProductsPage,
 });
 
+type ProductFormDialogProps = {
+  open: boolean;
+  mode: 'create' | 'edit';
+  initialProduct?: Product | null;
+  loading: boolean;
+  error?: string | null;
+  onClose: () => void;
+  onSubmit: (values: ProductPayload) => Promise<void>;
+};
+
+type ProductFormState = {
+  name: string;
+  description: string;
+  sku: string;
+  price: string;
+  quantity: string;
+};
+
 function ProductsPage() {
   const { t } = useTranslation();
-  const [category, setCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
+  const auth = useAuth();
+  const token = auth.token;
+  const queryClient = useQueryClient();
 
-  const products = [
-    {
-      id: 1,
-      name: 'Premium Laptop',
-      category: 'Electronics',
-      price: 1299.99,
-      stock: 45,
-      status: 'in-stock',
-      rating: 4.5,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'High-performance laptop for professionals',
-    },
-    {
-      id: 2,
-      name: 'Wireless Headphones',
-      category: 'Electronics',
-      price: 199.99,
-      stock: 120,
-      status: 'in-stock',
-      rating: 4.8,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'Premium noise-cancelling headphones',
-    },
-    {
-      id: 3,
-      name: 'Smart Watch',
-      category: 'Accessories',
-      price: 349.99,
-      stock: 0,
-      status: 'out-of-stock',
-      rating: 4.2,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'Advanced fitness and health tracking',
-    },
-    {
-      id: 4,
-      name: 'Office Chair',
-      category: 'Furniture',
-      price: 599.99,
-      stock: 15,
-      status: 'low-stock',
-      rating: 4.6,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'Ergonomic office chair with lumbar support',
-    },
-    {
-      id: 5,
-      name: 'Desk Lamp',
-      category: 'Furniture',
-      price: 79.99,
-      stock: 200,
-      status: 'in-stock',
-      rating: 4.3,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'LED desk lamp with adjustable brightness',
-    },
-    {
-      id: 6,
-      name: 'Bluetooth Speaker',
-      category: 'Electronics',
-      price: 129.99,
-      stock: 8,
-      status: 'low-stock',
-      rating: 4.7,
-      image: 'https://via.placeholder.com/300x200',
-      description: 'Portable speaker with premium sound quality',
-    },
-  ];
+  const [searchTerm, setSearchTerm] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [dialogError, setDialogError] = useState<string | null>(null);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
-  const getStockStatus = (stock: number) => {
-    if (stock === 0) return { label: t('outOfStock'), color: 'error' };
-    if (stock < 10) return { label: t('lowStock'), color: 'warning' };
-    return { label: t('inStock'), color: 'success' };
+  const productsQuery = useQuery({
+    queryKey: ['products', token],
+    queryFn: () => productsApi.list(token),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (payload: ProductPayload) => productsApi.create(token, payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['products', token] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: ProductPayload }) =>
+      productsApi.update(token, id, payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['products', token] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => productsApi.remove(token, id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['products', token] });
+    },
+    onError: (error) => {
+      setPageError(error instanceof Error ? error.message : t('unknownError'));
+    },
+    onSettled: () => {
+      setDeleteTargetId(null);
+    },
+  });
+
+  const filteredProducts = useMemo(() => {
+    const products = productsQuery.data ?? [];
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return products;
+    return products.filter((product) => {
+      const haystack = [product.name, product.sku, product.description]
+        .filter(Boolean)
+        .map((value) => value.toLowerCase());
+      return haystack.some((value) => value.includes(term));
+    });
+  }, [productsQuery.data, searchTerm]);
+
+  const openCreateDialog = () => {
+    setEditingProduct(null);
+    setDialogError(null);
+    setDialogOpen(true);
   };
+
+  const openEditDialog = (product: Product) => {
+    setEditingProduct(product);
+    setDialogError(null);
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setDialogError(null);
+    setEditingProduct(null);
+  };
+
+  const handleDialogSubmit = async (values: ProductPayload) => {
+    setDialogError(null);
+    try {
+      if (editingProduct) {
+        await updateMutation.mutateAsync({
+          id: editingProduct.id,
+          payload: values,
+        });
+      } else {
+        await createMutation.mutateAsync(values);
+      }
+      closeDialog();
+    } catch (error) {
+      setDialogError(
+        error instanceof Error ? error.message : t('unknownError')
+      );
+    }
+  };
+
+  const handleDelete = (product: Product) => {
+    if (!window.confirm(t('deleteConfirmation'))) return;
+    setPageError(null);
+    setDeleteTargetId(product.id);
+    deleteMutation.mutate(product.id);
+  };
+
+  const getStockStatus = (quantity: number) => {
+    if (quantity === 0)
+      return { label: t('outOfStock'), color: 'error' as const };
+    if (quantity < 10)
+      return { label: t('lowStock'), color: 'warning' as const };
+    return { label: t('inStock'), color: 'success' as const };
+  };
+
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   return (
     <PageContainer>
@@ -122,152 +170,324 @@ function ProductsPage() {
         title={t('products')}
         subtitle={t('manageProducts')}
         action={
-          <Button variant='contained' startIcon={<Add />}>
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            onClick={openCreateDialog}
+          >
             {t('addProduct')}
           </Button>
         }
       />
-      {/* Filters and Search */}
-      <Box sx={{ mb: 3 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <TextField
-            placeholder={t('searchProducts')}
-            size='small'
-            sx={{ flexGrow: 1, maxWidth: { sm: 400 } }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FormControl size='small' sx={{ minWidth: 150 }}>
-            <InputLabel>{t('category')}</InputLabel>
-            <Select
-              value={category}
-              label={t('category')}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <MenuItem value='all'>{t('allCategories')}</MenuItem>
-              <MenuItem value='electronics'>{t('electronics')}</MenuItem>
-              <MenuItem value='furniture'>{t('furniture')}</MenuItem>
-              <MenuItem value='accessories'>{t('accessories')}</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl size='small' sx={{ minWidth: 150 }}>
-            <InputLabel>{t('sortBy')}</InputLabel>
-            <Select
-              value={sortBy}
-              label={t('sortBy')}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <MenuItem value='name'>{t('name')}</MenuItem>
-              <MenuItem value='price'>{t('price')}</MenuItem>
-              <MenuItem value='stock'>{t('stock')}</MenuItem>
-              <MenuItem value='rating'>{t('rating')}</MenuItem>
-            </Select>
-          </FormControl>
-          <Button variant='outlined' startIcon={<FilterList />}>
-            {t('moreFilters')}
-          </Button>
-        </Stack>
-      </Box>
-      {/* Products Grid */}
-      <Grid container spacing={3}>
-        {products.map((product) => {
-          const stockStatus = getStockStatus(product.stock);
-          return (
-            <Grid
-              key={product.id}
-              size={{
-                xs: 12,
-                sm: 6,
-                md: 4,
-              }}
-            >
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <CardMedia
-                  component='img'
-                  height='200'
-                  image={product.image}
-                  alt={product.name}
-                  sx={{ bgcolor: 'grey.100' }}
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Stack spacing={1}>
-                    <Stack
-                      direction='row'
-                      justifyContent='space-between'
-                      alignItems='flex-start'
+
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
+        <TextField
+          placeholder={t('searchProducts')}
+          size='small'
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          sx={{ flexGrow: 1, maxWidth: { sm: 400 } }}
+        />
+      </Stack>
+
+      {productsQuery.isLoading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+          <CircularProgress />
+        </Box>
+      ) : productsQuery.isError ? (
+        <Alert severity='error' sx={{ mb: 2 }}>
+          {productsQuery.error instanceof Error
+            ? productsQuery.error.message
+            : t('unknownError')}
+        </Alert>
+      ) : (
+        <>
+          {pageError && (
+            <Alert severity='error' sx={{ mb: 2 }}>
+              {pageError}
+            </Alert>
+          )}
+          {filteredProducts.length === 0 ? (
+            <Alert severity='info'>{t('noProductsFound')}</Alert>
+          ) : (
+            <Grid container spacing={3}>
+              {filteredProducts.map((product) => {
+                const status = getStockStatus(product.quantity);
+                return (
+                  <Grid
+                    key={product.id}
+                    size={{ xs: 12, sm: 6, md: 4 }}
+                    sx={{ display: 'flex' }}
+                  >
+                    <Card
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flexGrow: 1,
+                      }}
                     >
-                      <Typography
-                        variant='h6'
-                        component='div'
-                        sx={{ fontSize: '1.1rem' }}
-                      >
-                        {product.name}
-                      </Typography>
-                      <Chip
-                        label={stockStatus.label}
-                        size='small'
-                        color={
-                          stockStatus.color as 'success' | 'warning' | 'error'
-                        }
-                      />
-                    </Stack>
-                    <Typography variant='body2' color='text.secondary'>
-                      {product.category}
-                    </Typography>
-                    <Typography variant='body2' color='text.secondary'>
-                      {product.description}
-                    </Typography>
-                    <Stack direction='row' alignItems='center' spacing={1}>
-                      <Star sx={{ color: 'warning.main', fontSize: 18 }} />
-                      <Typography variant='body2'>{product.rating}</Typography>
-                    </Stack>
-                    <Stack
-                      direction='row'
-                      justifyContent='space-between'
-                      alignItems='center'
-                    >
-                      <Typography variant='h6' color='primary.main'>
-                        ${product.price}
-                      </Typography>
-                      <Typography variant='body2' color='text.secondary'>
-                        {t('stock')}: {product.stock}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-                <CardActions sx={{ px: 2, pb: 2 }}>
-                  <Button size='small' startIcon={<Visibility />}>
-                    {t('view')}
-                  </Button>
-                  <Button size='small' startIcon={<Edit />}>
-                    {t('edit')}
-                  </Button>
-                  <IconButton size='small' color='error' sx={{ ml: 'auto' }}>
-                    <Delete fontSize='small' />
-                  </IconButton>
-                </CardActions>
-              </Card>
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Stack
+                          direction='row'
+                          justifyContent='space-between'
+                          alignItems='flex-start'
+                          spacing={1}
+                        >
+                          <Typography variant='h6' component='div'>
+                            {product.name}
+                          </Typography>
+                          <Chip
+                            label={status.label}
+                            size='small'
+                            color={status.color}
+                          />
+                        </Stack>
+                        <Typography
+                          variant='body2'
+                          color='text.secondary'
+                          sx={{ mt: 1 }}
+                        >
+                          {t('sku')}: {product.sku}
+                        </Typography>
+                        {product.description && (
+                          <Typography
+                            variant='body2'
+                            color='text.secondary'
+                            sx={{ mt: 1 }}
+                          >
+                            {product.description}
+                          </Typography>
+                        )}
+                        <Stack
+                          direction='row'
+                          justifyContent='space-between'
+                          alignItems='center'
+                          sx={{ mt: 2 }}
+                        >
+                          <Typography variant='h6' color='primary.main'>
+                            {new Intl.NumberFormat(undefined, {
+                              style: 'currency',
+                              currency: 'USD',
+                            }).format(product.price)}
+                          </Typography>
+                          <Typography variant='body2' color='text.secondary'>
+                            {t('quantity')}: {product.quantity}
+                          </Typography>
+                        </Stack>
+                      </CardContent>
+                      <CardActions sx={{ px: 2, pb: 2 }}>
+                        <Button
+                          size='small'
+                          startIcon={<Edit />}
+                          onClick={() => openEditDialog(product)}
+                        >
+                          {t('edit')}
+                        </Button>
+                        <IconButton
+                          size='small'
+                          color='error'
+                          sx={{ ml: 'auto' }}
+                          onClick={() => handleDelete(product)}
+                          disabled={
+                            deleteTargetId === product.id &&
+                            deleteMutation.isPending
+                          }
+                        >
+                          <Delete fontSize='small' />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                );
+              })}
             </Grid>
-          );
-        })}
-      </Grid>
-      {/* Pagination */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Typography variant='body2' color='text.secondary'>
-          {t('showing')} 1-6 {t('of')} 24 {t('productsCount')}
-        </Typography>
-      </Box>
+          )}
+        </>
+      )}
+
+      <ProductFormDialog
+        open={dialogOpen}
+        mode={editingProduct ? 'edit' : 'create'}
+        initialProduct={editingProduct}
+        loading={isSubmitting}
+        error={dialogError}
+        onClose={closeDialog}
+        onSubmit={handleDialogSubmit}
+      />
     </PageContainer>
+  );
+}
+
+function ProductFormDialog({
+  open,
+  mode,
+  initialProduct,
+  loading,
+  error,
+  onClose,
+  onSubmit,
+}: ProductFormDialogProps) {
+  const { t } = useTranslation();
+  const [values, setValues] = useState<ProductFormState>(() => ({
+    name: '',
+    description: '',
+    sku: '',
+    price: '',
+    quantity: '',
+  }));
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof ProductFormState, string>>
+  >({});
+
+  useEffect(() => {
+    if (!open) return;
+    setValues({
+      name: initialProduct?.name ?? '',
+      description: initialProduct?.description ?? '',
+      sku: initialProduct?.sku ?? '',
+      price: initialProduct?.price != null ? String(initialProduct.price) : '',
+      quantity:
+        initialProduct?.quantity != null ? String(initialProduct.quantity) : '',
+    });
+    setFieldErrors({});
+  }, [initialProduct, open]);
+
+  const handleChange = (key: keyof ProductFormState, value: string) => {
+    setValues((prev) => ({ ...prev, [key]: value }));
+    if (fieldErrors[key]) {
+      setFieldErrors((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const validate = () => {
+    const nextErrors: Partial<Record<keyof ProductFormState, string>> = {};
+    if (!values.name.trim()) nextErrors.name = t('nameRequired');
+    if (!values.sku.trim()) nextErrors.sku = t('skuRequired');
+
+    if (!values.price.trim()) nextErrors.price = t('priceRequired');
+    const priceValue = Number(values.price);
+    if (values.price.trim() && (Number.isNaN(priceValue) || priceValue < 0)) {
+      nextErrors.price = t('priceInvalid');
+    }
+
+    if (!values.quantity.trim()) nextErrors.quantity = t('quantityRequired');
+    const quantityValue = Number(values.quantity);
+    if (
+      values.quantity.trim() &&
+      (Number.isNaN(quantityValue) || quantityValue < 0)
+    ) {
+      nextErrors.quantity = t('quantityInvalid');
+    }
+
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!validate()) return;
+    await onSubmit({
+      name: values.name.trim(),
+      description: values.description.trim(),
+      sku: values.sku.trim(),
+      price: Number(values.price),
+      quantity: Number(values.quantity),
+    });
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+      <Box component='form' onSubmit={(e) => void handleSubmit(e)}>
+        <DialogTitle>
+          {mode === 'create' ? t('createProduct') : t('updateProduct')}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={2} sx={{ mt: error ? 0 : 1 }}>
+            {error && <Alert severity='error'>{error}</Alert>}
+            <TextField
+              label={t('name')}
+              value={values.name}
+              onChange={(event) => handleChange('name', event.target.value)}
+              fullWidth
+              required
+              disabled={loading}
+              error={!!fieldErrors.name}
+              helperText={fieldErrors.name}
+            />
+            <TextField
+              label={t('description')}
+              value={values.description}
+              onChange={(event) =>
+                handleChange('description', event.target.value)
+              }
+              fullWidth
+              disabled={loading}
+              multiline
+              minRows={3}
+            />
+            <TextField
+              label={t('sku')}
+              value={values.sku}
+              onChange={(event) => handleChange('sku', event.target.value)}
+              fullWidth
+              required
+              disabled={loading}
+              error={!!fieldErrors.sku}
+              helperText={fieldErrors.sku}
+            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField
+                label={t('price')}
+                value={values.price}
+                onChange={(event) => handleChange('price', event.target.value)}
+                fullWidth
+                required
+                disabled={loading}
+                type='number'
+                inputProps={{ step: '0.01', min: '0' }}
+                error={!!fieldErrors.price}
+                helperText={fieldErrors.price}
+              />
+              <TextField
+                label={t('quantity')}
+                value={values.quantity}
+                onChange={(event) =>
+                  handleChange('quantity', event.target.value)
+                }
+                fullWidth
+                required
+                disabled={loading}
+                type='number'
+                inputProps={{ step: '1', min: '0' }}
+                error={!!fieldErrors.quantity}
+                helperText={fieldErrors.quantity}
+              />
+            </Stack>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} disabled={loading}>
+            {t('cancel')}
+          </Button>
+          <Button
+            type='submit'
+            variant='contained'
+            disabled={loading}
+            startIcon={
+              loading ? <CircularProgress size={16} color='inherit' /> : null
+            }
+          >
+            {mode === 'create' ? t('save') : t('save')}
+          </Button>
+        </DialogActions>
+      </Box>
+    </Dialog>
   );
 }

@@ -1,10 +1,9 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { SignInForm } from '@/feature/auth';
-import { z } from 'zod';
+import { SignUpForm } from '@/feature/auth';
 
-export const Route = createFileRoute('/_auth/signin')({
+export const Route = createFileRoute('/_auth/signup')({
   beforeLoad: () => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
@@ -12,16 +11,11 @@ export const Route = createFileRoute('/_auth/signin')({
       throw redirect({ to: '/dashboard' });
     }
   },
-  validateSearch: z.object({
-    registered: z.string().optional(),
-    redirect: z.string().optional(),
-  }),
-  component: SignIn,
+  component: SignUp,
 });
 
-function SignIn() {
+function SignUp() {
   const { t } = useTranslation();
-  const { registered } = Route.useSearch();
   return (
     <Box>
       <Stack spacing={3}>
@@ -32,14 +26,15 @@ function SignIn() {
             gutterBottom
             color='text.primary'
           >
-            {t('signin')}
+            {t('signUp')}
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            {t('signInSubtitle')}
+            {t('signUpSubtitle')}
           </Typography>
         </Box>
-        <SignInForm showRegistrationSuccess={registered === '1'} />
+        <SignUpForm />
       </Stack>
     </Box>
   );
 }
+

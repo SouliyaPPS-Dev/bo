@@ -1,9 +1,16 @@
 import { createContext } from 'react';
+import type {
+  AuthUser,
+  RegisterRequest,
+  SignInRequest,
+} from '@/services/api/auth';
 
 export type AuthContextType = {
   isAuthenticated: boolean;
   token: string | null;
-  signIn: (params: { email: string; password: string }) => Promise<void>;
+  user: AuthUser | null;
+  signIn: (params: SignInRequest) => Promise<void>;
+  register: (params: RegisterRequest) => Promise<AuthUser>;
   signOut: () => void;
 };
 
