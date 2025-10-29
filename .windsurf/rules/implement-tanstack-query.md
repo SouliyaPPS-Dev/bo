@@ -1,5 +1,5 @@
 ---
-trigger: manual
+trigger: model_decision
 ---
 
 # You are a Professional of tanstack query

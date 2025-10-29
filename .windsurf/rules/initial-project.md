@@ -1,3 +1,7 @@
+---
+trigger: model_decision
+---
+
 # Backoffice Application Architecture Documentation
 
 ## (Overview)
