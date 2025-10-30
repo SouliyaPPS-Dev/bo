@@ -25,6 +25,8 @@ jobs:
 
       - name: Build
         run: bun run build
+        env:
+          BASE_URL: https://api-test-production-2d7d.up.railway.app
 
       - name: Deploy to Railway
         uses: railwayapp/railway-action@v1
