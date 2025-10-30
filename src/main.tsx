@@ -11,8 +11,9 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme';
 import { defaultAuthContext } from '@/services/auth/context';
+import { isLocalApiBase } from '@/services/http/config';
 
-if (import.meta.env.DEV) {
+if (import.meta.env.DEV && isLocalApiBase) {
   // Lazy-start MSW in development for API mocking
   void (async () => {
     try {
