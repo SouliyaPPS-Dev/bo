@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
   const apiBaseUrl =
     env.BASE_URL?.trim() ||
     env.VITE_API_BASE_URL?.trim() ||
-    'http://localhost:8080'
+    'https://api-test-production-2d7d.up.railway.app'
 
   const allowedHosts = new Set<string>(['localhost', '127.0.0.1', '0.0.0.0'])
 

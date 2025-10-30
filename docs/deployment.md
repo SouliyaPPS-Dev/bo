@@ -7,7 +7,7 @@ This project ships with a GitHub Actions workflow (`.github/workflows/deploy-rai
 1. Create a Railway project and service for the app.
 2. Generate a Railway API token (`railway tokens create` in the Railway CLI or through the dashboard).
 3. Capture your Railway project ID and service ID (`railway status` lists both when linked locally).
-4. Ensure `.env.development` defines `BASE_URL=https://api-test-production-2d7d.up.railway.app` (already checked into the repo) so local dev and CI builds share the same API target.
+4. Ensure `.env.development` defines `BASE_URL=https://api-test-production-2d7d.up.railway.app` (already checked into the repo). If not provided, builds default to this Railway API host automatically.
 
 ### Required GitHub Secrets
 
