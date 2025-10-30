@@ -1,19 +1,22 @@
-import { PropsWithChildren, useMemo, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import { useRouter } from '@tanstack/react-router';
 import * as authApi from '@/services/api/auth';
-import type { AuthUser, RegisterRequest, SignInRequest } from '@/services/api/auth';
-import { AuthContext, AuthContextType } from './context';
+import type {
+  AuthUser,
+  RegisterRequest,
+  SignInRequest,
+} from '@/services/api/auth';
+import type { AuthContextType, AuthRouterContext } from './context';
+import {
+  clearAccessToken,
+  getStoredAccessToken,
+  setAccessToken,
+  subscribeToAccessToken,
+} from './tokenStorage';
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [token, setToken] = useState<string | null>(() => {
-    // Prefer the new key; fall back to legacy and migrate if present
-    const newToken = localStorage.getItem('accessToken');
-    if (newToken) return newToken;
-    const legacy = localStorage.getItem('auth_token');
-    if (legacy) {
-      localStorage.setItem('accessToken', legacy);
-    }
-    return legacy;
-  });
+  const router = useRouter();
+  const [token, setToken] = useState<string | null>(() => getStoredAccessToken());
   const [user, setUser] = useState<AuthUser | null>(() => {
     const stored = localStorage.getItem('authUser');
     if (!stored) return null;
@@ -28,10 +31,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const persistSession = (nextToken: string, nextUser: AuthUser) => {
     setToken(nextToken);
     setUser(nextUser);
-    localStorage.setItem('accessToken', nextToken);
+    setAccessToken(nextToken);
     localStorage.setItem('authUser', JSON.stringify(nextUser));
-    // Set isAuthenticated flag for backward compatibility
-    localStorage.setItem('isAuthenticated', 'true');
     // Clean up any legacy key
     localStorage.removeItem('auth_token');
   };
@@ -39,9 +40,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const clearSession = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('accessToken');
+    clearAccessToken();
     localStorage.removeItem('authUser');
-    localStorage.removeItem('isAuthenticated');
   };
 
   const value = useMemo<AuthContextType>(
@@ -66,5 +66,49 @@ export function AuthProvider({ children }: PropsWithChildren) {
     [token, user]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  useEffect(() => {
+    const unsubscribe = subscribeToAccessToken((nextToken) => {
+      setToken((prev) => (prev === nextToken ? prev : nextToken));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const nextContext: AuthRouterContext = {
+      ...(router.options.context ?? {}),
+      auth: value,
+    };
+
+    router.update({
+      context: nextContext,
+    });
+
+    const matchIds = new Set<string>();
+
+    router.state.matches.forEach((match) => matchIds.add(match.id));
+    router.state.pendingMatches?.forEach((match) => matchIds.add(match.id));
+    router.state.cachedMatches.forEach((match) => matchIds.add(match.id));
+
+    matchIds.forEach((matchId) => {
+      router.updateMatch(matchId, (prevMatch) => {
+        const prevContext = (prevMatch.context as Record<string, unknown> | undefined) ?? {};
+        const previousAuth = (prevContext as Partial<AuthRouterContext>).auth;
+
+        if (previousAuth === value) {
+          return prevMatch;
+        }
+
+        return {
+          ...prevMatch,
+          context: {
+            ...prevContext,
+            auth: value,
+          } satisfies AuthRouterContext,
+        };
+      });
+    });
+  }, [router, value]);
+
+  return <>{children}</>;
 }

@@ -1,10 +1,11 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { Suspense } from 'react';
 import Loading from '@/components/Loading';
 import { AuthProvider } from '@/services/auth';
+import type { AuthRouterContext } from '@/services/auth/context';
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<AuthRouterContext>()({
   component: RootComponent,
   notFoundComponent: () => (
     <div style={{ padding: 24, textAlign: 'center' }}>

@@ -1,6 +1,12 @@
 import { resolveApiUrl } from './config';
+import { renewAccessToken } from './tokenRenewal';
 
 type HttpVerb = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+type RequestOptions = RequestInit & {
+  method: HttpVerb;
+  skipAuthRetry?: boolean;
+};
 
 function buildHeaders(
   initHeaders: HeadersInit | undefined,
@@ -48,11 +54,74 @@ function extractErrorMessage(response: Response, body: unknown): string {
   return `Request failed with status ${response.status}`;
 }
 
-async function request<T>(
+function shouldAttemptRenew(
   url: string,
-  init: RequestInit & { method: HttpVerb }
-): Promise<T> {
-  const response = await fetch(resolveApiUrl(url), init);
+  init: RequestOptions,
+  body: unknown
+): boolean {
+  if (init.skipAuthRetry) return false;
+  if (url.includes('/auth/renew')) return false;
+
+  const headers = new Headers(init.headers);
+  const authHeader = headers.get('Authorization');
+  if (!authHeader) return false;
+
+  let message: string | undefined;
+  if (typeof body === 'string') {
+    message = body;
+  } else if (body && typeof body === 'object') {
+    const record = body as Record<string, unknown>;
+    const candidate = record.error ?? record.message ?? record.detail;
+    if (typeof candidate === 'string') {
+      message = candidate;
+    }
+  }
+
+  if (!message) return false;
+
+  return message.toLowerCase().includes('invalid or expired token');
+}
+
+function prepareRetryInit(
+  init: RequestOptions,
+  token: string
+): RequestOptions {
+  const headers = new Headers(init.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+
+  return {
+    ...init,
+    headers,
+    skipAuthRetry: true,
+  };
+}
+
+async function request<T>(url: string, init: RequestOptions): Promise<T> {
+  const apiUrl = resolveApiUrl(url);
+  const response = await fetch(apiUrl, init);
+
+  if (response.status === 401) {
+    const body = await parseBody(response);
+
+    if (shouldAttemptRenew(url, init, body)) {
+      const renewedToken = await renewAccessToken();
+
+      if (renewedToken) {
+        const retryInit = prepareRetryInit(init, renewedToken);
+        const retryResponse = await fetch(apiUrl, retryInit);
+        const retryBody = await parseBody(retryResponse);
+
+        if (!retryResponse.ok) {
+          throw new Error(extractErrorMessage(retryResponse, retryBody));
+        }
+
+        return retryBody as T;
+      }
+    }
+
+    throw new Error(extractErrorMessage(response, body));
+  }
+
   const body = await parseBody(response);
 
   if (!response.ok) {

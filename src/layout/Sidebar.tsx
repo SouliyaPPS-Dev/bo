@@ -161,6 +161,25 @@ export default function Sidebar({
     const isExpanded = expandedItems.includes(item.label);
     const active = isActive(item.path);
 
+    const listItemStyles = {
+      '&.Mui-selected': {
+        backgroundColor: 'primary.main',
+        color: 'primary.contrastText',
+        borderRadius: 0,
+        '&:hover': {
+          backgroundColor: 'primary.dark',
+          borderRadius: 0,
+        },
+        '& .MuiListItemIcon-root': {
+          color: 'primary.contrastText',
+        },
+      },
+      '&:hover': {
+        backgroundColor: active ? 'primary.dark' : 'action.hover',
+        borderRadius: 0,
+      },
+    } as const;
+
     return (
       <Box key={item.label}>
         <ListItemButton
@@ -173,24 +192,12 @@ export default function Sidebar({
           }}
           selected={active}
           sx={{
-            borderRadius: 2,
+            borderRadius: 0,
             mx: 1,
             mb: 0.5,
             pl: collapsed ? 2 : depth > 0 ? 4 : 2,
             transition: 'all 0.2s',
-            '&.Mui-selected': {
-              backgroundColor: 'primary.main',
-              color: 'primary.contrastText',
-              '&:hover': {
-                backgroundColor: 'primary.dark',
-              },
-              '& .MuiListItemIcon-root': {
-                color: 'primary.contrastText',
-              },
-            },
-            '&:hover': {
-              backgroundColor: active ? 'primary.dark' : 'action.hover',
-            },
+            ...listItemStyles,
           }}
         >
           <ListItemIcon
@@ -286,14 +293,40 @@ export default function Sidebar({
 
       {/* Main Navigation */}
       <Box sx={{ flexGrow: 1, overflow: 'auto', py: 2 }}>
-        <List>{navigationItems.map((item) => renderNavigationItem(item))}</List>
+        <List
+          sx={{
+            '& .MuiListItemButton-root': {
+              borderRadius: 2,
+            },
+            '& .MuiListItemButton-root.Mui-selected': {
+              borderRadius: 2,
+            },
+            '& .MuiListItemButton-root:hover': {
+              borderRadius: 2,
+            },
+          }}
+        >
+          {navigationItems.map((item) => renderNavigationItem(item))}
+        </List>
       </Box>
 
       <Divider sx={{ mx: 2 }} />
 
       {/* Bottom Navigation */}
       <Box sx={{ py: 2 }}>
-        <List>
+        <List
+          sx={{
+            '& .MuiListItemButton-root': {
+              borderRadius: 2,
+            },
+            '& .MuiListItemButton-root.Mui-selected': {
+              borderRadius: 2,
+            },
+            '& .MuiListItemButton-root:hover': {
+              borderRadius: 2,
+            },
+          }}
+        >
           {bottomNavigationItems.map((item) => renderNavigationItem(item))}
         </List>
       </Box>
@@ -317,6 +350,7 @@ export default function Sidebar({
             boxSizing: 'border-box',
             borderRight: 'none',
             boxShadow: 4,
+            borderRadius: 0,
           },
         }}
       >
@@ -336,6 +370,7 @@ export default function Sidebar({
           boxSizing: 'border-box',
           borderRight: '1px solid',
           borderColor: 'divider',
+          borderRadius: 0,
           transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,

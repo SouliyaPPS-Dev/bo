@@ -1,4 +1,3 @@
-import { createContext } from 'react';
 import type {
   AuthUser,
   RegisterRequest,
@@ -14,4 +13,24 @@ export type AuthContextType = {
   signOut: () => void;
 };
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const defaultAuthContext: AuthContextType = {
+  isAuthenticated: false,
+  token: null,
+  user: null,
+  // These default implementations are placeholders until AuthProvider replaces them
+  signIn: async () => {
+    await Promise.resolve();
+    throw new Error('Auth context not initialized.');
+  },
+  register: async () => {
+    await Promise.resolve();
+    throw new Error('Auth context not initialized.');
+  },
+  signOut: () => {
+    throw new Error('Auth context not initialized.');
+  },
+};
+
+export type AuthRouterContext = {
+  auth: AuthContextType;
+};

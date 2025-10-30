@@ -10,6 +10,7 @@ import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme';
+import { defaultAuthContext } from '@/services/auth/context';
 
 if (import.meta.env.DEV) {
   // Lazy-start MSW in development for API mocking
@@ -35,7 +36,9 @@ if (import.meta.env.DEV) {
 const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
-  context: undefined,
+  context: {
+    auth: defaultAuthContext,
+  },
 });
 
 declare module '@tanstack/react-router' {

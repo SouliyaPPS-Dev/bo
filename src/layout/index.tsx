@@ -84,6 +84,7 @@ export function AppLayout({ children }: PropsWithChildren) {
           backdropFilter: 'blur(10px)',
           borderBottom: '1px solid',
           borderColor: 'divider',
+          borderRadius: 0,
         }}
       >
         <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
