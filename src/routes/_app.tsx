@@ -3,11 +3,13 @@ import { AppLayout } from '@/layout';
 import { useAuth } from '@/services/auth';
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import type { AuthRouterContext } from '@/services/auth/context';
+import { getStoredAccessToken } from '@/services/auth/tokenStorage';
 
 export const Route = createFileRoute('/_app')({
-  beforeLoad: ({ location }) => {
-    // Check for accessToken to determine authentication
-    const accessToken = localStorage.getItem('accessToken');
+  beforeLoad: ({ context, location }) => {
+    const authContext = (context as AuthRouterContext | undefined)?.auth;
+    const accessToken = authContext?.token ?? getStoredAccessToken();
 
     if (!accessToken) {
       // TanStack Router's redirect is designed to be thrown

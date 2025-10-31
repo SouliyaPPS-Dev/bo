@@ -37,6 +37,8 @@ if (import.meta.env.DEV && isLocalApiBase) {
 const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
+  defaultPreloadStaleTime: 0,
+  scrollRestoration: true,
   context: {
     auth: defaultAuthContext,
   },

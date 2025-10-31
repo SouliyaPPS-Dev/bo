@@ -3,6 +3,7 @@ import type {
   RegisterRequest,
   SignInRequest,
 } from '@/services/api/auth';
+import { getStoredAccessToken } from './tokenStorage';
 
 export type AuthContextType = {
   isAuthenticated: boolean;
@@ -13,9 +14,11 @@ export type AuthContextType = {
   signOut: () => void;
 };
 
+const initialToken = getStoredAccessToken();
+
 export const defaultAuthContext: AuthContextType = {
-  isAuthenticated: false,
-  token: null,
+  isAuthenticated: !!initialToken,
+  token: initialToken,
   user: null,
   // These default implementations are placeholders until AuthProvider replaces them
   signIn: async () => {

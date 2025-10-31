@@ -1,11 +1,14 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { Box, Stack, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { SignUpForm } from '@/feature/auth';
+import type { AuthRouterContext } from '@/services/auth/context';
+import { Box, Stack, Typography } from '@mui/material';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_auth/signup')({
-  beforeLoad: () => {
-    const accessToken = localStorage.getItem('accessToken');
+  beforeLoad: ({ context }) => {
+    const accessToken =
+      (context as AuthRouterContext | undefined)?.auth?.token ?? null;
+
     if (accessToken) {
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw redirect({ to: '/dashboard' });
@@ -37,4 +40,3 @@ function SignUp() {
     </Box>
   );
 }
-

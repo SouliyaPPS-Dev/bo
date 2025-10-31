@@ -1,6 +1,6 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router';
-import { Box, Container, Paper, Stack, Typography } from '@mui/material';
 import { LanguageSwitcher } from '@/layout';
+import { Box, Container, Paper, Stack, Typography } from '@mui/material';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_auth')({
@@ -18,12 +18,6 @@ function AuthLayout() {
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        // Dynamic gradient that adapts to light/dark mode
-        background: (theme) =>
-          theme.palette.mode === 'dark'
-            ? `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`
-            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
-        transition: 'background 0.3s ease-in-out',
       }}
     >
       {/* Language Switcher in top-right corner */}
