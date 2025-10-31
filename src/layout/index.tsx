@@ -1,16 +1,20 @@
 import {
   AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Stack,
-  IconButton,
-  useTheme,
-  useMediaQuery,
   Avatar,
   Badge,
-  Tooltip,
+  Box,
   Divider,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 // color scheme handled via useThemeMode helper
 import { useThemeMode } from '@/theme/mode';
@@ -24,8 +28,9 @@ import {
 import Sidebar from './Sidebar';
 import LanguageSwitcher from './LanguageSwitcher';
 import ProfilePopover from './ProfilePopover';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from '@tanstack/react-router';
 
 const DRAWER_WIDTH = 280;
 const DRAWER_WIDTH_COLLAPSED = 72;
@@ -35,8 +40,76 @@ export function AppLayout({ children }: PropsWithChildren) {
   const theme = useTheme();
   const { toggle, isDark } = useThemeMode();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const searchIndex = useMemo(
+    () => [
+      {
+        id: 'dashboard',
+        title: t('search.dashboard.title'),
+        description: t('search.dashboard.description'),
+        path: '/dashboard',
+        category: t('search.category.overview'),
+      },
+      {
+        id: 'analytics',
+        title: t('search.analytics.title'),
+        description: t('search.analytics.description'),
+        path: '/analytics/overview',
+        category: t('search.category.analytics'),
+      },
+      {
+        id: 'users',
+        title: t('search.users.title'),
+        description: t('search.users.description'),
+        path: '/users',
+        category: t('search.category.management'),
+      },
+      {
+        id: 'products',
+        title: t('search.products.title'),
+        description: t('search.products.description'),
+        path: '/products',
+        category: t('search.category.management'),
+      },
+      {
+        id: 'settings',
+        title: t('search.settings.title'),
+        description: t('search.settings.description'),
+        path: '/settings',
+        category: t('search.category.account'),
+      },
+      {
+        id: 'support',
+        title: t('search.support.title'),
+        description: t('search.support.description'),
+        path: '/support',
+        category: t('search.category.help'),
+      },
+    ],
+    [t]
+  );
+
+  const filteredSearchResults = useMemo(() => {
+    const term = searchQuery.trim().toLowerCase();
+    if (!term) return [];
+    return searchIndex.filter((item) => {
+      const haystack = `${item.title} ${item.description}`.toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [searchIndex, searchQuery]);
+
+  const handleSearchSelect = (path: string) => {
+    if (path) {
+      void navigate({ to: path });
+      setSearchQuery('');
+      setSearchFocused(false);
+    }
+  };
 
   const handleDrawerToggle = () => {
     if (isMobile) {
@@ -137,6 +210,7 @@ export function AppLayout({ children }: PropsWithChildren) {
                 display: 'flex',
                 alignItems: 'center',
                 maxWidth: 600,
+                position: 'relative',
               }}
             >
               <Box
@@ -162,6 +236,7 @@ export function AppLayout({ children }: PropsWithChildren) {
                 <Box
                   component='input'
                   placeholder={t('search')}
+                  value={searchQuery}
                   sx={{
                     border: 'none',
                     outline: 'none',
@@ -174,8 +249,108 @@ export function AppLayout({ children }: PropsWithChildren) {
                       opacity: 1,
                     },
                   }}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => {
+                    // Delay blur to allow click selection
+                    setTimeout(() => setSearchFocused(false), 120);
+                  }}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') {
+                      setSearchQuery('');
+                      setSearchFocused(false);
+                    }
+                    if (event.key === 'Enter') {
+                      const firstResult = filteredSearchResults[0];
+                      if (firstResult) {
+                        event.preventDefault();
+                        handleSearchSelect(firstResult.path);
+                      }
+                    }
+                  }}
                 />
               </Box>
+              {searchFocused && (
+                <Paper
+                  elevation={8}
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    mt: 1,
+                    width: '100%',
+                    borderRadius: 2,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    zIndex: theme.zIndex.modal,
+                    maxHeight: 360,
+                    overflowY: 'auto',
+                  }}
+                >
+                  {searchQuery.trim() ? (
+                    filteredSearchResults.length > 0 ? (
+                      <List disablePadding>
+                        {filteredSearchResults.map((item) => (
+                          <ListItemButton
+                            key={item.id}
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => handleSearchSelect(item.path)}
+                            sx={{
+                              alignItems: 'flex-start',
+                              gap: 1,
+                              py: 1.5,
+                            }}
+                          >
+                            <Box
+                              component='span'
+                              sx={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                                color: 'text.secondary',
+                                bgcolor: 'action.hover',
+                                borderRadius: 1,
+                                px: 1,
+                                py: 0.25,
+                              }}
+                            >
+                              {item.category}
+                            </Box>
+                            <ListItemText
+                              primary={
+                                <Typography variant='subtitle2'>{item.title}</Typography>
+                              }
+                              secondary={
+                                <Typography variant='body2' color='text.secondary'>
+                                  {item.description}
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    ) : (
+                      <Box sx={{ p: 2 }}>
+                        <Typography variant='subtitle2' gutterBottom>
+                          {t('search.noResults')}
+                        </Typography>
+                        <Typography variant='body2' color='text.secondary'>
+                          {t('search.tryAnother')}
+                        </Typography>
+                      </Box>
+                    )
+                  ) : (
+                    <Box sx={{ p: 2 }}>
+                      <Typography variant='subtitle2' gutterBottom>
+                        {t('search.quickHelpTitle')}
+                      </Typography>
+                      <Typography variant='body2' color='text.secondary'>
+                        {t('search.quickHelpBody')}
+                      </Typography>
+                    </Box>
+                  )}
+                </Paper>
+              )}
             </Box>
           )}
 

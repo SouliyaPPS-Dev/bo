@@ -78,6 +78,27 @@ export default defineConfig(({ mode }) => {
       target: 'esnext',
       sourcemap: false,
       minify: 'esbuild',
+      chunkSizeWarningLimit: 1024,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            reactVendor: ['react', 'react-dom', 'react/jsx-runtime'],
+            muiVendor: [
+              '@mui/material',
+              '@mui/icons-material',
+              '@mui/x-date-pickers',
+              '@emotion/react',
+              '@emotion/styled',
+            ],
+            tanstackVendor: [
+              '@tanstack/react-router',
+              '@tanstack/react-router-devtools',
+              '@tanstack/react-query',
+              '@tanstack/react-form',
+            ],
+          },
+        },
+      },
     },
   }
 })

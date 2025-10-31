@@ -29,6 +29,7 @@ import {
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAdminUsers } from '@/feature/users/hooks/useAdminUsers';
 
 interface NavigationItem {
   label: string;
@@ -67,6 +68,20 @@ export default function Sidebar({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const {
+    data: adminUsers,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+  } = useAdminUsers();
+
+  const usersCount = adminUsers?.length;
+  const usersBadge = isUsersLoading
+    ? '...'
+    : isUsersError
+      ? undefined
+      : usersCount;
+  const usersBadgeColor =
+    typeof usersBadge === 'number' && usersBadge > 0 ? 'error' : 'default';
 
   const handleNavigation = (path?: string) => {
     if (path) {
@@ -126,8 +141,8 @@ export default function Sidebar({
       label: t('users'),
       path: '/users',
       icon: <PeopleIcon />,
-      badge: 12,
-      badgeColor: 'error',
+      badge: usersBadge,
+      badgeColor: usersBadge !== undefined ? usersBadgeColor : undefined,
     },
     {
       label: t('products'),
