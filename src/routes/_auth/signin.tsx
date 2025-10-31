@@ -11,8 +11,7 @@ export const Route = createFileRoute('/_auth/signin')({
       (context as AuthRouterContext | undefined)?.auth?.token ?? null;
 
     if (accessToken) {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
-      throw redirect({ to: '/dashboard' });
+      redirect({ to: '/dashboard', throw: true });
     }
   },
   validateSearch: z.object({

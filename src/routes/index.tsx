@@ -6,9 +6,9 @@ export const Route = createFileRoute('/')({
     const accessToken =
       (context as AuthRouterContext | undefined)?.auth?.token ?? null;
 
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw redirect({
+    redirect({
       to: accessToken ? '/dashboard' : '/signin',
+      throw: true,
     });
   },
 });

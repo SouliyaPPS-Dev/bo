@@ -31,7 +31,13 @@ export default [
     rules: {
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn'
+      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        {
+          allow: ['Response']
+        }
+      ]
     }
   }
 ]

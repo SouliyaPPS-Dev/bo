@@ -13,12 +13,12 @@ export const Route = createFileRoute('/_app')({
 
     if (!accessToken) {
       // TanStack Router's redirect is designed to be thrown
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
-      throw redirect({
+      redirect({
         to: '/signin',
         search: {
           redirect: location.href,
         },
+        throw: true,
       });
     }
   },
