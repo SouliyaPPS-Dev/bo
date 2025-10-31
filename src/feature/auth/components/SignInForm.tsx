@@ -129,7 +129,10 @@ export default function SignInForm({
   };
 
   const handleChange = (key: keyof SignInValues, value: string | boolean) => {
-    setValues((v) => ({ ...v, [key]: value }) as SignInValues);
+    setValues((v) => (({
+      ...v,
+      [key]: value
+    }) as SignInValues));
     if (touched[key]) validate(key);
 
     if (key === 'rememberMe') {
